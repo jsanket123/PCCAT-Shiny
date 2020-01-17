@@ -2,7 +2,6 @@
 # PCCAT #
 #########
 
-#Testing
 
 library(scatterD3)
 
