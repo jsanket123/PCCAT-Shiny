@@ -2,7 +2,7 @@
 # PCCAT #
 #########
 
-library(scatterD3)  ########HHHH
+library(scatterD3)  
 
 options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
