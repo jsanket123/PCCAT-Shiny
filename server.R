@@ -4,7 +4,7 @@
 
 library(scatterD3)
 
-options(shiny.maxRequestSize=30*1024^2)
+options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
 default_lines <- data.frame(
   slope = c(0, Inf), 
