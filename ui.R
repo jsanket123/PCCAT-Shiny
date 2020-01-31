@@ -25,36 +25,46 @@ dashboardPage(skin="green",
       # Second tab content
       tabItem(tabName = "input",
               h2("Data Input and Preprocessing Options",align="center"),
-              fluidRow( 
-                h4(strong("Data import (.csv)")),
-                fileInput("file", label = (""))
-              ),
+              
+              h4(strong("Data import (.csv)")),
               fluidRow(
-                h4(strong("Select variables:")), #tags$hr(), 
-                column(3, numericInput( "start", label = h5("Feature start col"), value=2, min=1)),
+                #tags$style(".shiny-file-input-progress {display:none}"),
+                column(12,fileInput("file", label = ("")),offset=0.2)
+              ),
+             
+              h4(strong("Select variables:")),
+              fluidRow(
+                style = "margin-top:-1em",
+                column(3, numericInput( "start", label = h5("Feature start col"), value=2, min=1),offset = 0.2),
                 column(3, selectInput( "color", label = h5("Color"), "")),
                 column(3, selectInput( "size", label = h5("Size"), "")),
                 column(3, numericInput( "k", label = h5("#clusters"), value=4, min=1))
               ),
+              
+              h4(strong("Data transformation Options:")),
               fluidRow(
-                h4(strong("Data transformation Options:")),
-                column(3, checkboxInput("log",label = "Log-transform?", FALSE)),
+                style = "margin-top:-1em",
+                column(3, checkboxInput("log",label = "Log-transform?", FALSE),offset = 0.2),
                 column(3, checkboxInput("std",label = "Standardize?", TRUE)), 
                 column(3, checkboxInput("ellipses", "Confidence ellipses?", FALSE)) 
               ),
+              
+              h4(strong("Data Analysis Plots Options:")),
               fluidRow(
-                h4(strong("Data Analysis Plots Options:")),
-                column(4, sliderInput("scatterD3_labsize", h5("Labels size"), min = 5, max = 25, value = 11)),
+                style = "margin-top:-1em",
+                column(4, sliderInput("scatterD3_labsize", h5("Labels size"), min = 5, max = 25, value = 11),offset = 0.2),
                 column(4, sliderInput("scatterD3_opacity", h5("Points opacity"), min = 0, max = 1, value = 1, step = 0.05)),
-                column(3, actionButton("goButton", "Run Analysis"))
+                column(4, actionButton("goButton", "Run Analysis",style="color: #fff; background-color: #337ab7; border-color: #2e6da4"))
               ),
-              tags$p(
-                h4(strong("Additional Options:")),
+              
+              h4(strong("Additional Options:")),
+              fluidRow(
+                tags$p(
                 actionButton("scatterD3-reset-zoom", HTML("<span class='glyphicon glyphicon-search' aria-hidden='true'></span> Reset Zoom")),
                 actionButton("scatterD3-lasso-toggle", HTML("<span class='glyphicon glyphicon-screenshot' aria-hidden='true'></span> Toggle Lasso"), "data-toggle" = "button"),
                 tags$a(id = "scatterD3-svg-export", href = "#",
                        class = "btn btn-default", HTML("<span class='glyphicon glyphicon-save' aria-hidden='true'></span> Download SVG"))
-              )
+              ))
           
       ),
       tabItem(tabName = "pca",
