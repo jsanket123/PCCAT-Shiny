@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(scatterD3)
+library(shinyalert)
 
 dashboardPage(
   skin="green",
@@ -12,7 +13,7 @@ dashboardPage(
       sidebarMenu(
         menuItem("Introduction", tabName = "intro",icon= icon("info")),
         menuItem("Data Input", tabName = "input", icon = icon("file-upload")),
-        menuItem("Data Analysis", icon = icon("bar-chart-o"),
+        menuItem("Data Analysis", icon = icon("bar-chart-o"),startExpanded = TRUE,
           menuSubItem("Principal Component Analysis", tabName = "pca"),
           menuSubItem("Clustering Analysis", tabName = "clustering")),
         menuItem("Help", tabName = "help",icon = icon("question"))
@@ -52,6 +53,7 @@ dashboardPage(
               
               br(),
               fluidRow(
+                useShinyalert(),
                 column(4, actionButton("goButton", "Run Analysis",style="color: #fff; background-color: #337ab7; border-color: #2e6da4"))
               ),
               br(),

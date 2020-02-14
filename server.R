@@ -39,7 +39,10 @@ shinyServer(function(input, output, session){
   observe({updateSelectInput(session,"size",choices=c('None',names(myData())), selected="None")})
   # observe({updateSelectInput(session,"symbol",choices=c('None',names(myData())), selected="None")})
   # observe({updateSelectInput(session,"opacity",choices=names(myData()), selected="")})
-            
+        
+  observeEvent(input$goButton, {
+    shinyalert("Check results in data analysis tab!",type="success")
+  })
   
   useData <- reactive({
     input$goButton
