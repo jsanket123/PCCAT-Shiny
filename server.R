@@ -57,7 +57,7 @@ shinyServer(function(input, output, session){
   })
 
   #==============  Two regular plots for PCA
-  output$plot1 <- renderPlot({
+  output$pca_plot1 <- renderPlot({
    input$goButton
    if(!is.null(useData()))
    { 
@@ -109,7 +109,7 @@ shinyServer(function(input, output, session){
   })
   
   #==============  Interactive PCA
-  output$plot2 <- renderScatterD3({
+  output$pca_plot2 <- renderScatterD3({
     input$goButton
     if(!is.null(useData()))
     { 
@@ -158,7 +158,7 @@ shinyServer(function(input, output, session){
   
   
   #==============  Clustering
-  output$plot3 <- renderPlot({
+  output$cl_plot1 <- renderPlot({
     input$goButton
     if(!is.null(useData())){ 
       isolate({
@@ -170,21 +170,21 @@ shinyServer(function(input, output, session){
 
         par(mfrow=c(1,2), mar=c(2,3,2,0)+.4,mgp=c(1.3,.3,0), tck=-0.02, cex.axis=1.3, 
             cex.lab=1.3, cex.main=1.3)
-        plot(cl, which=1) #check ?plot.partition for interpretation and more options
+        plot(cl, which=1, main="Partitioning Clustering Scatter Plot") #check ?plot.partition for interpretation and more options
         
       })
     }
   })
   
   # Dendogram
-  output$plot4 <- renderPlot({
+  output$cl_plot2 <- renderPlot({
     input$goButton
     if(!is.null(useData())){
       isolate({
         dat <- useData()$dat
         d <- dist(dat, method='euclidean')
         hcl <- hclust(d, method='complete')
-        plot(hcl, hang = -1, main='Dendrogram')
+        plot(hcl, hang = -1, main='Hierarchical Clustering Dendrogram')
       })
     }
   })

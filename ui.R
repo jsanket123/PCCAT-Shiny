@@ -78,15 +78,21 @@ dashboardPage(
                 tabBox(
                   # The id lets us use input$tabset1 on the server to find the current tab
                   id = "tabset", height = "400px",width = 12,
-                  tabPanel("Variance Plot",plotOutput("plot1", width = "100%", height = "500px")),
-                  tabPanel("2D Scatter Plot",scatterD3Output("plot2", width = "100%", height = "400px"))
+                  tabPanel("Variance Plot",plotOutput("pca_plot1", width = "100%", height = "450px")),
+                  tabPanel("2D Scatter Plot",scatterD3Output("pca_plot2", width = "100%", height = "450px"))
                   #tabPanel("3D Scatter Plot",scatterD3Output("plot3", width = "100%", height = "400px"))
                 ))
       ),
       tabItem(tabName = "clustering",
               h2("Clustering Analysis",align="center"),
-              plotOutput("plot3", width = "100%"),
-              plotOutput("plot4", width = "100%")
+              fluidRow(
+                tabBox(
+                  # The id lets us use input$tabset1 on the server to find the current tab
+                  id = "tabset", height = "400px",width = 12,
+                  tabPanel("Partitional Clustering",plotOutput("cl_plot1", width = "100%", height = "450px")),
+                  tabPanel("Hierarchical Clustering",scatterD3Output("cl_plot2", width = "100%", height = "450px"))
+                  #tabPanel("3D Scatter Plot",scatterD3Output("plot3", width = "100%", height = "400px"))
+                ))
       ),
       tabItem(tabName = "help",
               h2("PCCAT Help")
