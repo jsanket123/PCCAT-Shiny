@@ -182,12 +182,10 @@ shinyServer(function(input, output, session){
   output$cl_plot2 <- renderPlot({
     input$goButton
     if(!is.null(useData())){
-      isolate({
         dat <- useData()$dat
         hc <- hclust(dist(dat))
         plot(hc, main = "Heirarchical Clustering Model")
         rect.hclust(hc, k = input$k)
-      })
     }
   })
   
