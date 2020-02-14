@@ -6,11 +6,12 @@ library(scatterD3)
 library(gridExtra)
 library(ggplot2)
 library(ggbiplot)
+library(plotly)
 
 options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
 default_lines <- data.frame(
-  slope = c(0, Inf), 
+  slope = c(0, Inf),
   intercept = c(0, 0),
   stroke = "#000",
   stroke_width = 1,
@@ -81,11 +82,12 @@ shinyServer(function(input, output, session){
           ylim(0, pca$sdev[1]^2*1.2) + 
           theme(text = element_text(size=15),plot.title = element_text(hjust = 0.5))
 
-        PC_Bi_Plot <- ggbiplot(pca,varname.size = 3)+
-          ggtitle("PC1 vs PC2 Plot")+
-          theme_minimal() + 
-          theme(text = element_text(size=15),plot.title = element_text(hjust = 0.5),aspect.ratio = 1)
-        grid.arrange(Var_Plot, PC_Bi_Plot, ncol=2, widths=c(1,1))
+        Var_Plot
+        # PC_Bi_Plot <- ggbiplot(pca,varname.size = 3)+
+        #   ggtitle("PC1 vs PC2 Plot")+
+        #   theme_minimal() + 
+        #   theme(text = element_text(size=15),plot.title = element_text(hjust = 0.5),aspect.ratio = 1)
+        # grid.arrange(Var_Plot, PC_Bi_Plot, ncol=2, widths=c(1,1))
         #
         # par(mfrow=c(1,2), mar=c(2,2,2,0)+.2,mgp=c(1.3,.3,0), tck=-0.02,
         #   cex.axis=1.3, cex.lab=1.3, cex.main=1.3)
@@ -110,14 +112,16 @@ shinyServer(function(input, output, session){
   
   #==============  Interactive PCA
   output$pca_plot2 <- renderScatterD3({
-    input$goButton
+    #input$goButton
     if(!is.null(useData()))
     { 
-      isolate({
-        pca <- useData()$pca; 
+      
+       
+        
+        pca <- useData()$pca;
         p <- ncol(pca$x)
         mat <- useData()$mat; #nams <- names(mat)
-        mat$x <- pca$x[,1]; 
+        mat$x <- pca$x[,1];
         mat$y <- pca$x[,2]; # you can add input to specify which 2 PC
         mat$lab <- row.names(mat)
         mat$foo <- rep(1, nrow(mat))
@@ -126,33 +130,33 @@ shinyServer(function(input, output, session){
         size_var <- if (input$size == "None") NULL else mat[,input$size]
         # symbol_var <- if (input$symbol == "None") NULL else mat[,input$symbol]
         symbol_var <- NULL
-        
+
         scatterD3(
-          x = mat$x, 
-          y = mat$y, 
-          xlab='PC1', 
-          ylab='PC2', 
-          lab = mat$lab, 
-          col_var = col_var, 
+          x = mat$x,
+          y = mat$y,
+          xlab='PC1',
+          ylab='PC2',
+          lab = mat$lab,
+          col_var = col_var,
           col_lab = input$color,
           ellipses = input$ellipses,
-          size_var = size_var, 
+          size_var = size_var,
           size_lab = input$size,
-          symbol_var=symbol_var, 
+          symbol_var=symbol_var,
           symbol_lab = input$symbol,
           lines = lines(),
-          lasso = TRUE, 
+          lasso = TRUE,
           lasso_callback = "function(sel) {prompt('Copy to clipboard: Ctrl+C, Enter', sel.data().map(function(d) {return d.lab}).join(','));}",
-          point_size=150, 
+          point_size=150,
           point_opacity = input$scatterD3_opacity,
-          labels_size = input$scatterD3_labsize,  
-          hover_size = 3, 
-          axes_font_size = "150%", 
-          legend_font_size = "150%", 
+          labels_size = input$scatterD3_labsize,
+          hover_size = 3,
+          axes_font_size = "150%",
+          legend_font_size = "150%",
           transitions = TRUE
         )
         
-      })
+      
     }
   })
   
