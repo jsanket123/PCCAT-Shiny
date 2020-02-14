@@ -82,7 +82,8 @@ dashboardPage(
       ),
       tabItem(tabName = "clustering",
               h2("Clustering Analysis",align="center"),
-              plotOutput("plot3", width = "100%")
+              plotOutput("plot3", width = "100%"),
+              plotOutput("plot4", width = "100%")
       ),
       tabItem(tabName = "help",
               h2("PCCAT Help")
