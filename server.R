@@ -186,9 +186,9 @@ shinyServer(function(input, output, session){
     if(!is.null(useData())){
       isolate({
         dat <- useData()$dat
-        d <- dist(dat, method='euclidean')
-        hcl <- hclust(d, method='complete')
-        plot(hcl, hang = -1, main='Hierarchical Clustering Dendrogram')
+        hc <- hclust(dist(dat))
+        plot(hc, main = "Heirarchical Clustering Model")
+        rect.hclust(hc, k = input$k)
       })
     }
   })
