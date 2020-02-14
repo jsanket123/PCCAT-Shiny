@@ -184,7 +184,7 @@ shinyServer(function(input, output, session){
     if(!is.null(useData())){
         dat <- useData()$dat
         hc <- hclust(dist(dat))
-        plot(hc, main = "Heirarchical Clustering Model")
+        plot(hc, main = "Heirarchical Clustering Model", xlab = "", ylab = "", sub = "")
         rect.hclust(hc, k = input$k)
     }
   })
