@@ -176,6 +176,19 @@ shinyServer(function(input, output, session){
     }
   })
   
+  # Dendogram
+  output$plot4 <- renderPlot({
+    input$goButton
+    if(!is.null(useData())){
+      isolate({
+        dat <- useData()$dat
+        d <- dist(dat, method='euclidean')
+        hcl <- hclust(d, method='complete')
+        plot(hcl, hang = -1, main='Dendrogram')
+      })
+    }
+  })
+  
   
   #------------------- useful chunks
   
