@@ -165,7 +165,7 @@ shinyServer(function(input, output, session){
   output$cl_plot1 <- renderPlot({
     input$goButton
     if(!is.null(useData())){ 
-      isolate({
+      
         
         dat <- useData()$dat
         
@@ -176,7 +176,7 @@ shinyServer(function(input, output, session){
             cex.lab=1.3, cex.main=1.3)
         plot(cl, which=1, main="Partitioning Clustering Scatter Plot") #check ?plot.partition for interpretation and more options
         
-      })
+      
     }
   })
   
