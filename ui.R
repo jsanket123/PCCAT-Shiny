@@ -90,7 +90,7 @@ dashboardPage(
                   # The id lets us use input$tabset1 on the server to find the current tab
                   id = "tabset", height = "400px",width = 12,
                   tabPanel("Partitional Clustering",plotOutput("cl_plot1", width = "100%", height = "450px")),
-                  tabPanel("Hierarchical Clustering",scatterD3Output("cl_plot2", width = "100%", height = "450px"))
+                  tabPanel("Hierarchical Clustering",plotOutput("cl_plot2", width = "100%", height = "450px"))
                   #tabPanel("3D Scatter Plot",scatterD3Output("plot3", width = "100%", height = "400px"))
                 ))
       ),
