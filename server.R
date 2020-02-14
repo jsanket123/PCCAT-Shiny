@@ -72,6 +72,7 @@ shinyServer(function(input, output, session){
         percent <- 100*cumsum(pca$sdev^2)/sum(pca$sdev^2)
 
         perc_data <- data.frame(percent=percent, PC=1:length(percent), Var = pca$sdev^2)
+        
         Var_Plot <- ggplot(perc_data, aes(x=PC, y=Var)) +
           geom_bar(stat="identity") +
           ggtitle("Variance of Principle Components")+ 

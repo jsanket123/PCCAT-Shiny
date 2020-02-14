@@ -74,11 +74,14 @@ dashboardPage(
       ),
       tabItem(tabName = "pca",
               h2("Principal Component Analysis",align="center"),
-              br(),br(),
-              plotOutput("plot1", width = "100%", height = "500px"),
-              br(),br(),
-              scatterD3Output("plot2", width = "100%", height = "400px")
-              
+              fluidRow(
+                tabBox(
+                  # The id lets us use input$tabset1 on the server to find the current tab
+                  id = "tabset", height = "400px",width = 12,
+                  tabPanel("Variance Plot",plotOutput("plot1", width = "100%", height = "500px")),
+                  tabPanel("2D Scatter Plot",scatterD3Output("plot2", width = "100%", height = "400px"))
+                  #tabPanel("3D Scatter Plot",scatterD3Output("plot3", width = "100%", height = "400px"))
+                ))
       ),
       tabItem(tabName = "clustering",
               h2("Clustering Analysis",align="center"),
