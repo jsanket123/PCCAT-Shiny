@@ -6,7 +6,6 @@ library(scatterD3)
 library(gridExtra)
 library(ggplot2)
 library(ggbiplot)
-library(ggdendro)
 
 options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
@@ -184,7 +183,8 @@ shinyServer(function(input, output, session){
       isolate({
         dat <- useData()$dat
         hc <- hclust(dist(dat))
-        ggdendrogram(hc, main = "Hierarchical Clustering Dendrogram")
+        plot(hc, main = "Heirarchical Clustering Dendrogram")
+        rect.hclust(hc, k=input$k)
       })
     }
   })
