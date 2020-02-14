@@ -2,7 +2,10 @@
 # PCCAT #
 #########
 
-library(scatterD3)  
+library(scatterD3)
+library(gridExtra)
+library(ggplot2)
+library(ggbiplot)
 
 options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
@@ -18,38 +21,37 @@ default_lines <- data.frame(
 shinyServer(function(input, output, session){
 
   inFile <- reactive({
-    if (is.null(input$file)) {
-      return(NULL)
-    } else {
-      input$file
-    }
+    if (is.null(input$file)) 
+      {return(NULL)} 
+    else 
+      {input$file}
   })
 
   myData <- reactive({
-    if (is.null(inFile())) {
-      return(NULL)
-    } else {
-      read.csv(inFile()$datapath)
-    }
+    if (is.null(inFile())) 
+      {return(NULL)} 
+    else 
+      {read.csv(inFile()$datapath)}
   })
 
   observe({updateSelectInput(session,"color",choices=c('None',names(myData())), selected="None")})
   observe({updateSelectInput(session,"size",choices=c('None',names(myData())), selected="None")})
-  observe({updateSelectInput(session,"symbol",choices=c('None',names(myData())), selected="None")})
+  # observe({updateSelectInput(session,"symbol",choices=c('None',names(myData())), selected="None")})
   # observe({updateSelectInput(session,"opacity",choices=names(myData()), selected="")})
             
   
   useData <- reactive({
     input$goButton
     isolate({
-     if(!is.null(myData())){
-       nams <- names(mat <- myData())
-       dat <- mat[, input$start:ncol(mat)]
-       p <- ncol(dat)
-       if(input$log) dat <- log(dat)
-       if(input$std) dat <- scale(dat)
-       pca <- prcomp(dat, center=FALSE, scale=FALSE) #Unlike princomp, variances are computed with the usual divisor N - 1.
-       list(mat=mat, dat=dat, pca=pca)
+     if(!is.null(myData()))
+     {
+        nams <- names(mat <- myData())
+        dat <- mat[, input$start:ncol(mat)]
+        p <- ncol(dat)
+        if(input$log) dat <- log(dat)
+        if(input$std) dat <- scale(dat)
+        pca <- prcomp(dat, center=FALSE, scale=FALSE) #Unlike princomp, variances are computed with the usual divisor N - 1.
+        list(mat=mat, dat=dat, pca=pca)
       }
     })
   })
@@ -57,26 +59,44 @@ shinyServer(function(input, output, session){
   #==============  Two regular plots for PCA
   output$plot1 <- renderPlot({
    input$goButton
-   if(!is.null(useData())){ 
-    isolate({
-      
-      pca <- useData()$pca; p <- ncol(pca$x)
-      sumpca <- matrix(rep(0,3*p), nrow = 3)
-      sumpca[1,] <- pca$sdev^2
-      sumpca[2,] <- cumsum(pca$sdev^2)
-      sumpca[3,] <- cumsum(pca$sdev^2)/sum(pca$sdev^2)
-      
-      par(mfrow=c(1,2), mar=c(2,2,2,0)+.2,mgp=c(1.3,.3,0), tck=-0.02, 
-          cex.axis=1.3, cex.lab=1.3, cex.main=1.3)
-      plot(pca, main='Variance of Principle Components', ylim = c(0,pca$sdev[1]^2*1.2))
-      with(pca,
-           text(x = (1:p*1.1),
-                y = pca$sdev^2,
-                labels = paste(round(sumpca[3,]*100, 1),"%"),
-                pos = 3, cex = 1.3))
-      biplot(pca, cex=1.3) #, scale=1
+   if(!is.null(useData()))
+   { 
+      isolate({
+        pca <- useData()$pca; 
+        p <- ncol(pca$x)
+        #sumpca <- matrix(rep(0,3*p), nrow = 3)
+        #sumpca[1,] <- pca$sdev^2
+        #sumpca[2,] <- cumsum(pca$sdev^2)
+        #sumpca[3,] <- cumsum(pca$sdev^2)/sum(pca$sdev^2)
+        
+        percent <- 100*cumsum(pca$sdev^2)/sum(pca$sdev^2)
 
-   })
+        perc_data <- data.frame(percent=percent, PC=1:length(percent), Var = pca$sdev^2)
+        Var_Plot <- ggplot(perc_data, aes(x=PC, y=Var)) +
+          geom_bar(stat="identity") +
+          ggtitle("Variance of Principle Components")+ 
+          xlab("Principal Component") + ylab("Variance") +
+          geom_text(aes(label= paste(round(percent, 1),"%")), size=5, vjust=-.5) +
+          ylim(0, pca$sdev[1]^2*1.2) + 
+          theme(text = element_text(size=15),plot.title = element_text(hjust = 0.5))
+
+        PC_Bi_Plot <- ggbiplot(pca,varname.size = 3)+
+          ggtitle("PC1 vs PC2 Plot")+
+          theme_minimal() + 
+          theme(text = element_text(size=15),plot.title = element_text(hjust = 0.5),aspect.ratio = 1)
+        grid.arrange(Var_Plot, PC_Bi_Plot, ncol=2, widths=c(1,1))
+        #
+        # par(mfrow=c(1,2), mar=c(2,2,2,0)+.2,mgp=c(1.3,.3,0), tck=-0.02,
+        #   cex.axis=1.3, cex.lab=1.3, cex.main=1.3)
+        # plot(pca, main='Variance of Principle Components', ylim = c(0,pca$sdev[1]^2*1.2))
+        # with(pca,
+        #    text(x = (1:p*1.1),
+        #         y = pca$sdev^2,
+        #         labels = paste(round(sumpca[3,]*100, 1),"%"),
+        #         pos = 3, cex = 1.3))
+        # biplot(pca, cex=1.3) #, scale=1
+
+      })
    }
   })
   
@@ -90,12 +110,14 @@ shinyServer(function(input, output, session){
   #==============  Interactive PCA
   output$plot2 <- renderScatterD3({
     input$goButton
-    if(!is.null(useData())){ 
+    if(!is.null(useData()))
+    { 
       isolate({
-        
-        pca <- useData()$pca; p <- ncol(pca$x)
+        pca <- useData()$pca; 
+        p <- ncol(pca$x)
         mat <- useData()$mat; #nams <- names(mat)
-        mat$x <- pca$x[,1]; mat$y <- pca$x[,2]; # you can add input to specify which 2 PC
+        mat$x <- pca$x[,1]; 
+        mat$y <- pca$x[,2]; # you can add input to specify which 2 PC
         mat$lab <- row.names(mat)
         mat$foo <- rep(1, nrow(mat))
 

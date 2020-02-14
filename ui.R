@@ -1,8 +1,12 @@
 library(shiny)
 library(shinydashboard)
+library(scatterD3)
 
-dashboardPage(skin="green",
+dashboardPage(
+  skin="green",
+  
   dashboardHeader(title="PCCAT"),
+  
   dashboardSidebar(
     
       sidebarMenu(
@@ -15,11 +19,12 @@ dashboardPage(skin="green",
       )
     
    ),
+  
   dashboardBody(
     tabItems(
       # First tab content
       tabItem(tabName = "intro",
-              img(src="MI_EGLE.png",height = '10%', width = '7.5%', align='left'),
+              img(src="MI_EGLE.png",height = '10%', width = '7.5%', align='left',alt='EGLE logo'),
               includeHTML("help.html")),
       
       # Second tab content
@@ -44,8 +49,8 @@ dashboardPage(skin="green",
               h4(strong("Data transformation Options:")),
               fluidRow(
                 style = "margin-top:-1em",
-                column(3, checkboxInput("log",label = "Log-transform?", FALSE),offset = 0.2),
-                column(3, checkboxInput("std",label = "Standardize?", TRUE)), 
+                column(3, checkboxInput("std",label = "Standardize?", TRUE),offset = 0.2),
+                column(3, checkboxInput("log",label = "Log-transform?", FALSE)),
                 column(3, checkboxInput("ellipses", "Confidence ellipses?", FALSE)) 
               ),
               
@@ -69,8 +74,10 @@ dashboardPage(skin="green",
       ),
       tabItem(tabName = "pca",
               h2("Principal Component Analysis",align="center"),
-              plotOutput("plot1", width = "850px", height = "400px"),
-              scatterD3Output("plot2", width = "850px", height = "450px")
+              br(),br(),
+              plotOutput("plot1", width = "100%", height = "500px"),
+              br(),br(),
+              scatterD3Output("plot2", width = "100%", height = "400px")
               
       ),
       tabItem(tabName = "clustering",
