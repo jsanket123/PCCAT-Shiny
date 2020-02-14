@@ -56,14 +56,14 @@ dashboardPage(
               ),
               br(),
               
-              h4(strong("Additional Options:")),
-              fluidRow(
-                tags$p(
-                actionButton("scatterD3-reset-zoom", HTML("<span class='glyphicon glyphicon-search' aria-hidden='true'></span> Reset Zoom")),
-                actionButton("scatterD3-lasso-toggle", HTML("<span class='glyphicon glyphicon-screenshot' aria-hidden='true'></span> Toggle Lasso"), "data-toggle" = "button"),
-                tags$a(id = "scatterD3-svg-export", href = "#",
-                       class = "btn btn-default", HTML("<span class='glyphicon glyphicon-save' aria-hidden='true'></span> Download SVG"))
-              ))
+              # h4(strong("Additional Options:")),
+              # fluidRow(
+              #   tags$p(
+              #   actionButton("scatterD3-reset-zoom", HTML("<span class='glyphicon glyphicon-search' aria-hidden='true'></span> Reset Zoom")),
+              #   actionButton("scatterD3-lasso-toggle", HTML("<span class='glyphicon glyphicon-screenshot' aria-hidden='true'></span> Toggle Lasso"), "data-toggle" = "button"),
+              #   tags$a(id = "scatterD3-svg-export", href = "#",
+              #          class = "btn btn-default", HTML("<span class='glyphicon glyphicon-save' aria-hidden='true'></span> Download SVG"))
+              # ))
           
       ),
       tabItem(tabName = "pca",
@@ -98,12 +98,12 @@ dashboardPage(
                   id = "tabset", height = "400px",width = 12,
                   tabPanel("Partitional Clustering",plotOutput("cl_plot1", width = "100%", height = "400px"),
                            fluidRow(
-                             column(3, numericInput( "k", label = h5("Number of Clusters"), value=4, min=1))
+                             column(3, numericInput( "k1", label = h5("Number of Clusters"), value=4, min=1))
                              )
                            ),
                   tabPanel("Hierarchical Clustering",plotOutput("cl_plot2", width = "100%", height = "400px"),
                            fluidRow(
-                             column(3, numericInput( "k", label = h5("Number of Clusters"), value=4, min=1))
+                             column(3, numericInput( "k2", label = h5("Number of Clusters"), value=4, min=1))
                              )
                           )
                   #tabPanel("3D Scatter Plot",scatterD3Output("plot3", width = "100%", height = "400px"))

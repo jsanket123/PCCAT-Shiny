@@ -169,7 +169,7 @@ shinyServer(function(input, output, session){
         dat <- useData()$dat
         
         require(cluster)
-        cl <- pam(x=dat, k=input$k, diss=FALSE, metric='euclidean')
+        cl <- pam(x=dat, k=input$k1, diss=FALSE, metric='euclidean')
 
         par(mfrow=c(1,2), mar=c(2,3,2,0)+.4,mgp=c(1.3,.3,0), tck=-0.02, cex.axis=1.3, 
             cex.lab=1.3, cex.main=1.3)
@@ -185,7 +185,7 @@ shinyServer(function(input, output, session){
         dat <- useData()$dat
         hc <- hclust(dist(dat))
         plot(hc, main = "Heirarchical Clustering Model", xlab = "", ylab = "", sub = "")
-        rect.hclust(hc, k = input$k)
+        rect.hclust(hc, k = input$k2)
     }
   })
   
