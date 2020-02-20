@@ -7,6 +7,8 @@ library(gridExtra)
 library(ggplot2)
 library(ggbiplot)
 library(plotly)
+library(stringr)##paste0
+library(rgl)##for pca 3d plot1 open device
 
 options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
@@ -162,6 +164,62 @@ shinyServer(function(input, output, session){
       
     }
   })
+  
+  #==============  3D plots for PCA
+  
+  ###PCA_3D_plot1 using pca3d() function
+  output$pca_plot3 <- renderPlot({
+    input$goButton
+    if(!is.null(useData()))
+    { 
+      isolate({
+        pca <- useData()$pca; 
+        p <- ncol(pca$x)
+        a=pca3d(palette =c("dodgerblue2","#E31A1C", # red
+                           "green4",
+                           "#6A3D9A", # purple
+                           "#FF7F00", # orange
+                           "black","gold1",
+                           "skyblue2","#FB9A99", # lt pink
+                           "palegreen2",
+                           "#CAB2D6", # lt purple
+                           "#FDBF6F", # lt orange
+                           "gray70", "khaki2",
+                           "maroon","orchid1","deeppink1","blue1","steelblue4",
+                           "darkturquoise","green1","yellow4","yellow3",
+                           "darkorange4","brown"),pca,shape = "c",legend ="topright",show.plane = T,show.shapes = T,radius = 2,show.labels =T,
+                axe.titles = c(paste0("PC 1","(",summary(pca)$importance[2,1]*100,"%)"),paste0("PC 2","(",summary(pca)$importance[2,2]*100,"%)"),paste0("PC 3","(",summary(pca)$importance[2,3]*100,"%)")))
+        a  
+        
+      })
+    }
+  })
+  ###PCA_3D_plot2 using plotly 
+  
+  output$pca_plot4 <- renderPlotly({
+    input$goButton
+    if(!is.null(useData()))
+    { 
+      isolate({
+        pca <- useData()$pca; 
+        p <- ncol(pca$x)
+        
+        mat <- useData()$mat; 
+        mat$lab <- row.names(mat)
+        
+        ply <- plot_ly(x = ~pca$x[,1], y = ~pca$x[,2], z = ~pca$x[,3]) %>%
+          add_markers(marker = list(symbol = 'circle', sizemode = 'diameter'),
+                      text = ~paste('Obsevation:', mat$lab), showscale = TRUE) %>%
+          layout(scene = list(xaxis = list(title = paste0("PC 1","(",summary(pca)$importance[2,1]*100,"%)")),
+                              yaxis = list(title = paste0("PC 2","(",summary(pca)$importance[2,2]*100,"%)")),
+                              zaxis = list(title = paste0("PC 3","(",summary(pca)$importance[2,3]*100,"%)"))))
+        
+        ply
+        
+      })
+    }
+  })
+  
   
   
   #==============  Clustering

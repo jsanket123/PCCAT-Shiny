@@ -88,8 +88,9 @@ dashboardPage(
                           fluidRow(
                             column(4, checkboxInput("ellipses", "Confidence ellipses?", FALSE))
                           ),
-                        )
-                  #tabPanel("3D Scatter Plot",scatterD3Output("pca_plot3", width = "100%", height = "450px"))
+                        ),
+                  tabPanel("3D Scatter Plot",plotOutput("pca_plot3", width = "100%", height = "450px")),
+                  tabPanel("3D Scatter Plot2",plotlyOutput("pca_plot4", width = "100%", height = "450px"))
                 ))
       ),
       tabItem(tabName = "clustering",
