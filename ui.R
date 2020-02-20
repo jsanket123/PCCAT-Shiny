@@ -2,6 +2,8 @@ library(shiny)
 library(shinydashboard)
 library(scatterD3)
 library(shinyalert)
+library(pca3d)
+library(plotly)
 
 dashboardPage(
   skin="green",
