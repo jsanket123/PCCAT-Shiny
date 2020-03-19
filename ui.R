@@ -12,16 +12,16 @@ dashboardPage(
   
   dashboardSidebar(
     
-      sidebarMenu(
-        menuItem("Introduction", tabName = "intro",icon= icon("info")),
-        menuItem("Data Input", tabName = "input", icon = icon("file-upload")),
-        menuItem("Data Analysis", icon = icon("bar-chart-o"),startExpanded = TRUE,
-          menuSubItem("Principal Component Analysis", tabName = "pca"),
-          menuSubItem("Clustering Analysis", tabName = "clustering")),
-        menuItem("Help", tabName = "help",icon = icon("question"))
-      )
+    sidebarMenu(
+      menuItem("Introduction", tabName = "intro",icon= icon("info")),
+      menuItem("Data Input", tabName = "input", icon = icon("file-upload")),
+      menuItem("Data Analysis", icon = icon("bar-chart-o"),startExpanded = TRUE,
+               menuSubItem("Principal Component Analysis", tabName = "pca"),
+               menuSubItem("Clustering Analysis", tabName = "clustering")),
+      menuItem("Help", tabName = "help",icon = icon("question"))
+    )
     
-   ),
+  ),
   
   dashboardBody(
     tabItems(
@@ -39,7 +39,7 @@ dashboardPage(
                 #tags$style(".shiny-file-input-progress {display:none}"),
                 column(12,fileInput("file", label = ("")),offset=0.2)
               ),
-             
+              
               h4(strong("Select variables:")),
               fluidRow(
                 style = "margin-top:-1em",
@@ -68,7 +68,7 @@ dashboardPage(
               #   tags$a(id = "scatterD3-svg-export", href = "#",
               #          class = "btn btn-default", HTML("<span class='glyphicon glyphicon-save' aria-hidden='true'></span> Download SVG"))
               # ))
-          
+              
       ),
       tabItem(tabName = "pca",
               h2("Principal Component Analysis",align="center"),
@@ -82,17 +82,28 @@ dashboardPage(
                              style = "margin-top:-1em",
                              column(4, selectInput( "color", label = h5("Color"), "")),
                              column(4, selectInput( "size", label = h5("Size"), ""))
-                            ),
-                          fluidRow(
-                            column(4, sliderInput("scatterD3_labsize", h5("Labels size"), min = 5, max = 25, value = 11),offset = 0.2),
-                            column(4, sliderInput("scatterD3_opacity", h5("Points opacity"), min = 0, max = 1, value = 1, step = 0.05))
-                            ),
-                          fluidRow(
-                            column(4, checkboxInput("ellipses", "Confidence ellipses?", FALSE))
-                          ),
-                        ),
+                           ),
+                           fluidRow(
+                             column(4, sliderInput("scatterD3_labsize", h5("Labels size"), min = 5, max = 25, value = 11),offset = 0.2),
+                             column(4, sliderInput("scatterD3_opacity", h5("Points opacity"), min = 0, max = 1, value = 1, step = 0.05))
+                           ),
+                           fluidRow(
+                             column(4, checkboxInput("ellipses", "Confidence ellipses?", FALSE))
+                           ),
+                  ),
                   tabPanel("3D Scatter Plot",plotOutput("pca_plot3", width = "100%", height = "450px")),
-                  tabPanel("3D Scatter Plot2",plotlyOutput("pca_plot4", width = "100%", height = "450px"))
+                  tabPanel("3D Scatter Plot2",plotlyOutput("pca_plot4"),
+                           fluidRow(
+                             style = "margin-top:-1em",
+                             column(4, selectInput( "color3D", label = h5("Color"), "")),
+                             column(4, selectInput( "size3D", label = h5("Size"), ""))
+                           ),
+                           fluidRow(
+                             
+                             column(4, sliderInput("opacity_3D", h5("Points opacity"), min = 0, max = 1, value = 1, step = 0.05))
+                           )
+                           
+                  )
                 ))
       ),
       tabItem(tabName = "clustering",
@@ -104,14 +115,13 @@ dashboardPage(
                   tabPanel("Partitional Clustering",plotOutput("cl_plot1", width = "100%", height = "400px"),
                            fluidRow(
                              column(3, numericInput( "k1", label = h5("Number of Clusters"), value=4, min=1))
-                             )
-                           ),
+                           )
+                  ),
                   tabPanel("Hierarchical Clustering",plotOutput("cl_plot2", width = "100%", height = "400px"),
                            fluidRow(
                              column(3, numericInput( "k2", label = h5("Number of Clusters"), value=4, min=1))
-                             )
-                          )
-                  #tabPanel("3D Scatter Plot",scatterD3Output("plot3", width = "100%", height = "400px"))
+                           )
+                  )
                 ))
       ),
       tabItem(tabName = "help",
@@ -120,3 +130,4 @@ dashboardPage(
     )
   )
 )
+
