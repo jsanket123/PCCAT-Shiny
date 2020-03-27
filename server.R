@@ -275,13 +275,14 @@ shinyServer(function(input, output, session){
     }
   })
   
-  # Dendogram
+  # Dendrogram
   output$cl_plot2 <- renderPlot({
     input$goButton
     if(!is.null(useData())){
+      mat <- useData()$mat
       dat <- useData()$dat
       hc <- hclust(dist(dat))
-      plot(hc, main = "Heirarchical Clustering Model", xlab = "", ylab = "", sub = "")
+      plot(hc, main = "Hierarchical Clustering Model", xlab = "", ylab= "", sub = "", labels = mat[,input$k3])
       rect.hclust(hc, k = input$k2)
     }
   })

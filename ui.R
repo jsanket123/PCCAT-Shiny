@@ -119,7 +119,8 @@ dashboardPage(
                   ),
                   tabPanel("Hierarchical Clustering",plotOutput("cl_plot2", width = "100%", height = "400px"),
                            fluidRow(
-                             column(3, numericInput( "k2", label = h5("Number of Clusters"), value=4, min=1))
+                             column(3, numericInput( "k2", label = h5("Number of Clusters"), value=4, min=1)),
+                             column(3, numericInput("k3", label = h5("Label Column"), value=1, min=1))
                            )
                   )
                 ))
