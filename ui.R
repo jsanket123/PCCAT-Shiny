@@ -97,7 +97,7 @@ dashboardPage(
                            ),
                   ),
               
-                  tabPanel("3D Scatter Plot",plotlyOutput("pca_plot4"),
+                  tabPanel("3D Scatter Plot",plotlyOutput("pca_plot4", width = "100%", height = "500px"),
                            fluidRow(
                              style = "margin-top:-1em",
                              column(4, selectInput( "color3D", label = h5("Color"), "")),
