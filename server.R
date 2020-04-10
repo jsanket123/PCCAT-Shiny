@@ -77,15 +77,21 @@ shinyServer(function(input, output, session){
         #sumpca[2,] <- cumsum(pca$sdev^2)
         #sumpca[3,] <- cumsum(pca$sdev^2)/sum(pca$sdev^2)
         
-        percent <- 100*cumsum(pca$sdev^2)/sum(pca$sdev^2)
         
-        perc_data <- data.frame(percent=percent, PC=1:length(percent), Var = pca$sdev^2)
+        percent1 <- 100*(pca$sdev^2)/sum(pca$sdev^2)
+        percent2 <- 100*cumsum(pca$sdev^2)/sum(pca$sdev^2)
+        
+        percent2 <- percent2[(1:length(percent2))[percent2 <= 95]]
+        percent1 <- percent1[1:length(percent2)]
+        Var <- pca$sdev^2
+        
+        perc_data <- data.frame(percent1=percent1,percent2=percent2, PC=paste("PC",1:length(percent2),sep = ''), Var=Var[1:length(percent2)])
         
         Var_Plot <- ggplot(perc_data, aes(x=PC, y=Var)) +
           geom_bar(stat="identity") +
           ggtitle("Variance of Principle Components")+ 
-          xlab("Principal Component") + ylab("Variance") +
-          geom_text(aes(label= paste(round(percent, 1),"%")), size=5, vjust=-.5) +
+          xlab("Principal Component") + ylab("Variance Explained") +
+          geom_text(aes(label= paste(round(percent1,1),"% (",round(percent2, 1),"%)")), size=5, vjust=-.5) +
           ylim(0, pca$sdev[1]^2*1.2) + 
           theme(text = element_text(size=15),plot.title = element_text(hjust = 0.5))
         
@@ -110,6 +116,8 @@ shinyServer(function(input, output, session){
     }
   })
   
+  output$text1 <- renderText("Percentages on top of each bar represent the percentage of variance explained by that principle component and the cumulative percentage in the parentheses")
+  
   lines <- reactive({
     # if (input$scatterD3_threshold_line) {
     #   return(rbind(default_lines, threshold_line))
@@ -117,7 +125,7 @@ shinyServer(function(input, output, session){
     default_lines
   })
   
-  #==============  Interactive PCA
+  #==============  Interactive 2D Scatter Plot for PCA
   output$pca_plot2 <- renderScatterD3({
     #input$goButton
     if(!is.null(useData()))
@@ -168,7 +176,7 @@ shinyServer(function(input, output, session){
   })
   
   
-  #==============  3D plots for PCA
+  #============== Interactive 3D Scatter Plot for PCA
   
   output$pca_plot3 <- renderPlot({
     input$goButton
@@ -270,7 +278,7 @@ shinyServer(function(input, output, session){
       
       par(mfrow=c(1,2), mar=c(2,3,2,0)+.4,mgp=c(1.3,.3,0), tck=-0.02, cex.axis=1.3, 
           cex.lab=1.3, cex.main=1.3)
-      plot(cl, which=1, main="Partitioning Clustering Scatter Plot") #check ?plot.partition for interpretation and more options
+      plot(cl, which=1, main="Partitional Clustering Scatter Plot") #check ?plot.partition for interpretation and more options
       
     }
   })
@@ -282,52 +290,10 @@ shinyServer(function(input, output, session){
       mat <- useData()$mat
       dat <- useData()$dat
       hc <- hclust(dist(dat))
-      plot(hc, main = "Hierarchical Clustering Model", xlab = "", ylab= "", sub = "", labels = mat[,input$k3])
+      plot(hc, main = "Hierarchical Clustering: Dendogram", xlab = "", ylab= "", sub = "", labels = mat[,input$k3])
       rect.hclust(hc, k = input$k2)
     }
   })
-  
-  
-  #------------------- useful chunks
-  
-  #  output$tab <- renderTable({
-  #    input$goButton
-  #    isolate({
-  #     if(!is.null(useData())){
-  #      mat <- useData()$mat
-  #      inds <- which(mat$ME >= 0.15)
-  #      mat[,-1] <- round(mat[,-1], 3) # the first column is group name
-  #      if(length(inds)>0) mat[inds, 'ME'] <- paste('<div style="width: 100%; height: 100%; z-index: 0; background-color: rgba(255,0,0,.4); position:absolute; top: 0; left: 0; padding:5px;">
-  #<span>', mat[inds, 'ME'], '</span></div>')
-  #      names(mat) <- c('Group(s)','para1','para2','para3','Model error') 
-  #      mat        
-  #    }
-  #    })
-  #  }, digits=3, include.rownames=FALSE, sanitize.text.function=function(x){x}
-  #    #autoWidth = TRUE,
-  ##    columnDefs = list(list(width = '800px', targets = "_all"))
-  #  )
-  
-  #  output$text1 <- renderUI({
-  #   input$goButton
-  #   isolate({
-  #    if(!is.null(myData())){
-  #      str1 <- paste('Note model error is the minimal relative error to pass the Chi-square goodness-of-fit test for model.')
-  #      str2 <- paste('Usually for a good model it should be < 0.15.')
-  #      HTML(paste(str1, str2, sep = '<br/>'))
-  #    }
-  #   })
-  #  })
-  
-  #  output$downloadData <- downloadHandler(
-  #      filename = function() { paste('Output.csv', sep='') },   #Sys.Date()
-  #      content = function(files) {
-  #        mat <- useData()$mat
-  #        names(mat) <- c('Group(s)','para1','para2','para3','Model error') 
-  #        write.csv(mat, files, row.names = FALSE)
-  #      }
-  #  )
-  
   
 }) 
 

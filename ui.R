@@ -76,7 +76,12 @@ dashboardPage(
                 tabBox(
                   # The id lets us use input$tabset1 on the server to find the current tab
                   id = "tabset", height = "400px",width = 12,
-                  tabPanel("Variance Plot",plotOutput("pca_plot1", width = "100%", height = "450px")),
+                  tabPanel("Variance Plot",plotOutput("pca_plot1", width = "100%", height = "450px"),textOutput("text1"),
+                           tags$head(tags$style("#text1{color: blue;
+                                 font-size: 18px;
+                                 font-style: normal;
+                                 }"))
+                           ),
                   tabPanel("2D Scatter Plot",scatterD3Output("pca_plot2", width = "100%", height = "450px"),
                            fluidRow(
                              style = "margin-top:-1em",
