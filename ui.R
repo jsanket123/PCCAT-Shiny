@@ -96,8 +96,8 @@ dashboardPage(
                              column(4, checkboxInput("ellipses", "Confidence ellipses?", FALSE))
                            ),
                   ),
-                  tabPanel("3D Scatter Plot",plotOutput("pca_plot3", width = "100%", height = "450px")),
-                  tabPanel("3D Scatter Plot2",plotlyOutput("pca_plot4"),
+              
+                  tabPanel("3D Scatter Plot",plotlyOutput("pca_plot4"),
                            fluidRow(
                              style = "margin-top:-1em",
                              column(4, selectInput( "color3D", label = h5("Color"), "")),

@@ -179,33 +179,6 @@ shinyServer(function(input, output, session){
   
   #============== Interactive 3D Scatter Plot for PCA
   
-  output$pca_plot3 <- renderPlot({
-    input$goButton
-    if(!is.null(useData()))
-    { 
-      isolate({
-        pca <- useData()$pca; 
-        p <- ncol(pca$x)
-        a=pca3d(palette =c("dodgerblue2","#E31A1C", # red
-                           "green4",
-                           "#6A3D9A", # purple
-                           "#FF7F00", # orange
-                           "black","gold1",
-                           "skyblue2","#FB9A99", # lt pink
-                           "palegreen2",
-                           "#CAB2D6", # lt purple
-                           "#FDBF6F", # lt orange
-                           "gray70", "khaki2",
-                           "maroon","orchid1","deeppink1","blue1","steelblue4",
-                           "darkturquoise","green1","yellow4","yellow3",
-                           "darkorange4","brown"),pca,shape = "c",legend ="topright",show.plane = T,show.shapes = T,radius = 2,show.labels =T,
-                axe.titles = c(paste0("PC 1","(",summary(pca)$importance[2,1]*100,"%)"),paste0("PC 2","(",summary(pca)$importance[2,2]*100,"%)"),paste0("PC 3","(",summary(pca)$importance[2,3]*100,"%)")))
-        a  
-        
-      })
-    }
-  })
-  
   output$pca_plot4 <- renderPlotly({
     input$goButton
     if(!is.null(useData()))
