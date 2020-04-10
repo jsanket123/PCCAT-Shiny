@@ -199,9 +199,11 @@ shinyServer(function(input, output, session){
         add_markers(marker = list(symbol = 'circle', sizemode = 'diameter',opacity = input$opacity_3D,
                                   showlegend = T),
                     text = ~paste('Obsevation:', mat$lab) ) %>%
-        layout(scene = list(xaxis = list(title = paste0("PC 1","(",summary(pca)$importance[2,1]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2),
-                            yaxis = list(title = paste0("PC 2","(",summary(pca)$importance[2,2]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2),
-                            zaxis = list(title = paste0("PC 3","(",summary(pca)$importance[2,3]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2),camera = list(eye = list(x = -1.0, y = 1.25, z = 1.25),aspectmode = "manual",aspectratio = list(x=1, y=0.5, z=0.5))))
+        layout(scene = list(xaxis = list(title = paste0("PC 1","(",summary(pca)$importance[2,1]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),
+                            yaxis = list(title = paste0("PC 2","(",summary(pca)$importance[2,2]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),
+                            zaxis = list(title = paste0("PC 3","(",summary(pca)$importance[2,3]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),camera = list(eye = list(x = -1.0, y = 1.25, z = 1.25),aspectmode = "manual",aspectratio = list(x=1, y=0.5, z=0.5))),
+               paper_bgcolor = 'rgb(243, 243, 243)',
+               plot_bgcolor = 'rgb(243, 243, 243)')
       
       ply
       
