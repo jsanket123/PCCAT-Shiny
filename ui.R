@@ -43,7 +43,7 @@ dashboardPage(
               h4(strong("Select variables:")),
               fluidRow(
                 style = "margin-top:-1em",
-                column(3, numericInput( "start", label = h5("Numerical Feature Start Column"), value=2, min=1),offset = 0.2)
+                column(3, numericInput( "start", label = h5("Numerical Feature Start Column"), value=3, min=1),offset = 0.2)
               ),
               
               h4(strong("Data transformation Options:")),
@@ -123,9 +123,11 @@ dashboardPage(
                            )
                   ),
                   tabPanel("Hierarchical Clustering",plotOutput("cl_plot2", width = "100%", height = "400px"),
+                           tableOutput("cl_table"),
                            fluidRow(
                              column(3, numericInput( "k2", label = h5("Number of Clusters"), value=4, min=1)),
-                             column(3, numericInput("k3", label = h5("Label Column"), value=1, min=1))
+                             column(3, numericInput("k3", label = h5("Column with Label"), value=1, min=1)),
+                             column(3, numericInput("k4", label = h5("Which Cluster for Table"), value=1, min=1))
                            )
                   )
                 ))

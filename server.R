@@ -9,6 +9,7 @@ library(ggbiplot)
 library(plotly)
 library(stringr)
 library(rgl)
+library(dendextend)
 
 options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
@@ -292,6 +293,18 @@ shinyServer(function(input, output, session){
       hc <- hclust(dist(dat))
       plot(hc, main = "Hierarchical Clustering: Dendogram", xlab = "", ylab= "", sub = "", labels = mat[,input$k3])
       rect.hclust(hc, k = input$k2)
+    }
+  })
+  
+  # Cluster Table
+  output$cl_table <- renderTable({
+    input$goButton
+    if(!is.null(useData())){
+      mat <- useData()$mat
+      dat <- useData()$dat
+      hc <- hclust(dist(dat))
+      mat$clust <- cutree(hc, k = input$k2, order_clusters_as_data = FALSE)
+      subset(mat, clust == input$k4)
     }
   })
   
