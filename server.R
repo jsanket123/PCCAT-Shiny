@@ -89,8 +89,8 @@ shinyServer(function(input, output, session){
         
         Var_Plot <- ggplot(perc_data, aes(x=PC, y=Var)) +
           geom_bar(stat="identity") +
-          ggtitle("Variance of Principle Components")+ 
-          xlab("Principal Component") + ylab("Variance Explained") +
+          ggtitle("Variances of Principle Components")+ 
+          xlab("Principal Component") + ylab("Explained Variance") +
           geom_text(aes(label= paste(round(percent1,1),"% (",round(percent2, 1),"%)")), size=5, vjust=-.5) +
           ylim(0, pca$sdev[1]^2*1.2) + 
           theme(text = element_text(size=15),plot.title = element_text(hjust = 0.5))
