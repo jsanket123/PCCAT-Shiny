@@ -27,9 +27,13 @@ dashboardPage(
     tabItems(
       # First tab content
       tabItem(tabName = "intro",
-              img(src="MI_EGLE.png",height = '10%', width = '7.5%', align='left',alt='EGLE logo'),
-              includeHTML("help.html")),
-      
+              # img(src="MI_EGLE.png",height = '12%', width = '10%', align='left',alt='EGLE logo'),
+              # includeHTML("help.html")),
+
+              fluidRow(
+                column(2, img(src="MI_EGLE.png",height = '90%', width = '90%', align='right',alt='EGLE logo')),
+                column(10,includeHTML("intro.html"))
+              )),
       # Second tab content
       tabItem(tabName = "input",
               h2("Data Input and Preprocessing Options",align="center"),
@@ -133,7 +137,7 @@ dashboardPage(
                 ))
       ),
       tabItem(tabName = "help",
-              h2("PCCAT Help")
+              includeHTML("help.html")
       )
     )
   )
