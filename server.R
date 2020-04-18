@@ -209,12 +209,19 @@ shinyServer(function(input, output, session){
       ply <- plot_ly(x = ~pca$x[,1], y = ~pca$x[,2], z = ~pca$x[,3] ,color=~col_3D,showscale = TRUE,size = ~as.numeric(size_3D),sizes=c(10,20)) %>%
         add_markers(marker = list(symbol = 'circle', sizemode = 'diameter',opacity = input$opacity_3D,
                                   showlegend = T),
-                    text = ~paste('Obsevation:', mat$lab) ) %>%
+                    text = ~paste('Obsevation:', mat$lab),
+                    hovertemplate = paste(
+                      "<b>%{text}</b><br>",
+                      "PC1: %{x}<br>",
+                      "PC2: %{y}<br>",
+                      "PC3: %{z}",
+                      "<extra></extra>"
+                    )) %>%
         layout(scene = list(xaxis = list(title = paste0("PC 1","(",summary(pca)$importance[2,1]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),
                             yaxis = list(title = paste0("PC 2","(",summary(pca)$importance[2,2]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),
                             zaxis = list(title = paste0("PC 3","(",summary(pca)$importance[2,3]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),camera = list(eye = list(x = -1.0, y = 1.25, z = 1.25),aspectmode = "manual",aspectratio = list(x=1, y=0.5, z=0.5))),
-               paper_bgcolor = 'rgb(243, 243, 243)',
-               plot_bgcolor = 'rgb(243, 243, 243)')
+               paper_bgcolor = 'rgb(255, 255, 255)',
+               plot_bgcolor = 'rgb(169, 236, 253)')  #243, 243, 243
       
       ply
       
@@ -249,7 +256,6 @@ shinyServer(function(input, output, session){
   #      })
   #    }
   #  })
-  
   
   
   
