@@ -4,6 +4,7 @@ library(scatterD3)
 library(shinyalert)
 library(pca3d)
 library(plotly)
+library(RLumShiny)
 
 dashboardPage(
   skin="green",
@@ -101,13 +102,16 @@ dashboardPage(
                            fluidRow(
                              style = "margin-top:-1em",
                              column(4, selectInput( "color3D", label = h5("Color"), "")),
-                             column(4, selectInput( "size3D", label = h5("Size"), ""))
+                             column(4, selectInput( "size3D", label = h5("Size"), "")),
+                             column(4,popover(title="What does 3D plot show?", content="3D plot shows each observation on fisrt three PCs coordinate system"))
                            ),
                            fluidRow(
                              
                              column(4, sliderInput("opacity_3D", h5("Points opacity"), min = 0, max = 1, value = 1, step = 0.05))
-                           )
+                             
+                           ),
                            
+                          # fluidRow( popover(title=icon("question-circle"), content="3D plot shows each observation on fisrt three PCs coordinate system"))#try if it works   
                   )
                 ))
       ),
