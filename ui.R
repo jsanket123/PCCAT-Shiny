@@ -17,6 +17,7 @@ dashboardPage(
       menuItem("Introduction", tabName = "intro",icon= icon("info")),
       menuItem("Data Input", tabName = "input", icon = icon("file-upload")),
       menuItem("Data Analysis", icon = icon("bar-chart-o"),startExpanded = TRUE,
+               menuSubItem("Data Summary", tabName = "summary"),
                menuSubItem("Principal Component Analysis", tabName = "pca"),
                menuSubItem("Clustering Analysis", tabName = "clustering")),
       menuItem("Help", tabName = "help",icon = icon("question"))
@@ -28,9 +29,13 @@ dashboardPage(
     tabItems(
       # First tab content
       tabItem(tabName = "intro",
-              img(src="MI_EGLE.png",height = '10%', width = '7.5%', align='left',alt='EGLE logo'),
-              includeHTML("help.html")),
-      
+              # img(src="MI_EGLE.png",height = '12%', width = '10%', align='left',alt='EGLE logo'),
+              # includeHTML("help.html")),
+
+              fluidRow(
+                column(2, img(src="MI_EGLE.png",height = '90%', width = '90%', align='right',alt='EGLE logo')),
+                column(10,includeHTML("intro.html"))
+              )),
       # Second tab content
       tabItem(tabName = "input",
               h2("Data Input and Preprocessing Options",align="center"),
@@ -71,6 +76,17 @@ dashboardPage(
               # ))
               
       ),
+      
+      tabItem(tabName = "summary",
+              h2("Data Summary", align = "center"),
+              fluidRow(
+                tabBox(
+                  id = "tabset", width = 12,
+                  tabPanel("Summary Table", htmlOutput("sum_table"))
+                )
+              )
+      ),
+      
       tabItem(tabName = "pca",
               h2("Principal Component Analysis",align="center"),
               fluidRow(
@@ -137,7 +153,7 @@ dashboardPage(
                 ))
       ),
       tabItem(tabName = "help",
-              h2("PCCAT Help")
+              includeHTML("help.html")
       )
     )
   )
