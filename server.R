@@ -93,13 +93,13 @@ shinyServer(function(input, output, session){
         percent1 <- 100*(pca$sdev^2)/sum(pca$sdev^2)
         percent2 <- 100*cumsum(pca$sdev^2)/sum(pca$sdev^2)
         
-        percent2 <- percent2[(1:length(percent2))[percent2 <= 95]]
+        percent2 <- percent2[(1:length(percent2))[percent2 <= 99]]
         percent1 <- percent1[1:length(percent2)]
         Var <- pca$sdev^2
         
         perc_data <- data.frame(percent1=percent1,percent2=percent2, PC=paste("PC",1:length(percent2),sep = ''), Var=Var[1:length(percent2)])
         
-        Var_Plot <- ggplot(perc_data, aes(x=PC, y=Var)) +
+        Var_Plot <- ggplot(perc_data, aes(x=reorder(PC, -Var), y=Var)) +
           geom_bar(stat="identity") +
           ggtitle("Variances of Principle Components")+ 
           xlab("Principal Component") + ylab("Explained Variance") +
