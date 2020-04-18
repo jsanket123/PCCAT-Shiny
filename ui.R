@@ -16,6 +16,7 @@ dashboardPage(
       menuItem("Introduction", tabName = "intro",icon= icon("info")),
       menuItem("Data Input", tabName = "input", icon = icon("file-upload")),
       menuItem("Data Analysis", icon = icon("bar-chart-o"),startExpanded = TRUE,
+               menuSubItem("Data Summary", tabName = "summary"),
                menuSubItem("Principal Component Analysis", tabName = "pca"),
                menuSubItem("Clustering Analysis", tabName = "clustering")),
       menuItem("Help", tabName = "help",icon = icon("question"))
@@ -74,6 +75,17 @@ dashboardPage(
               # ))
               
       ),
+      
+      tabItem(tabName = "summary",
+              h2("Data Summary", align = "center"),
+              fluidRow(
+                tabBox(
+                  id = "tabset", width = 12,
+                  tabPanel("Summary Table", htmlOutput("sum_table"))
+                )
+              )
+      ),
+      
       tabItem(tabName = "pca",
               h2("Principal Component Analysis",align="center"),
               fluidRow(

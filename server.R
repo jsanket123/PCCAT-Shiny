@@ -10,6 +10,7 @@ library(plotly)
 library(stringr)
 library(rgl)
 library(dendextend)
+library(summarytools)
 
 options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
@@ -63,6 +64,16 @@ shinyServer(function(input, output, session){
         list(mat=mat, dat=dat, pca=pca)
       }
     })
+  })
+  
+  #============== Data Summary
+  output$sum_table <- renderUI({
+    input$goButton
+    if(!is.null(useData()))
+    {
+      dat <- useData()$dat
+      print(dfSummary(dat), method = 'render', headings = FALSE, bootstrap.css = FALSE)
+    }
   })
   
   #==============  Two regular plots for PCA
@@ -266,7 +277,7 @@ shinyServer(function(input, output, session){
       mat <- useData()$mat
       dat <- useData()$dat
       hc <- hclust(dist(dat))
-      plot(hc, main = "Hierarchical Clustering: Dendogram", xlab = "", ylab= "", sub = "", labels = mat[,input$k3])
+      plot(hc, main = "Hierarchical Clustering Dendrogram", xlab = "", ylab= "", sub = "", labels = mat[,input$k3])
       rect.hclust(hc, k = input$k2)
     }
   })
@@ -278,7 +289,7 @@ shinyServer(function(input, output, session){
       mat <- useData()$mat
       dat <- useData()$dat
       hc <- hclust(dist(dat))
-      mat$clust <- cutree(hc, k = input$k2, order_clusters_as_data = FALSE)
+      mat$clust <- cutree(hc, k = input$k2)
       subset(mat, clust == input$k4)
     }
   })
