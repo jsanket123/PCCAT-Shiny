@@ -1,16 +1,19 @@
-#########
-# PCCAT #
-#########
+###############################################################
+#   PCCAT: Principle Component and Clustering Analysis Tool   #
+###############################################################
 
-library(scatterD3)
-library(gridExtra)
-library(ggplot2)
-library(ggbiplot)
-library(plotly)
-library(stringr)
-library(rgl)
-library(dendextend)
-library(summarytools)
+# Server Side (server.R)
+
+suppressMessages(library(scatterD3))
+suppressMessages(library(gridExtra))
+suppressMessages(library(ggplot2))
+suppressMessages(library(ggbiplot))
+suppressMessages(library(plotly))
+suppressMessages(library(stringr))
+suppressMessages(library(rgl))
+suppressMessages(library(dendextend))
+suppressMessages(library(summarytools))
+suppressMessages(library(patchwork))
 
 options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
@@ -24,6 +27,14 @@ default_lines <- data.frame(
 
 
 shinyServer(function(input, output, session){
+  
+  output$style_tag <- renderUI({
+    if(input$sidebar=='intro')
+      {return(tags$head(tags$style(HTML('.content-wrapper {background-image:url(Great_Lakes.jpg);background-repeat: no-repeat;
+      background-size: 100% 100%;}'))))}
+    else
+      {return(tags$head(tags$style(HTML('.content-wrapper {background-image:none;}'))))}
+  })
   
   inFile <- reactive({
     if (is.null(input$file)) 
@@ -39,16 +50,22 @@ shinyServer(function(input, output, session){
     {read.csv(inFile()$datapath)}
   })
   
+  output$text2 <- renderText({
+    if(!is.null(myData()))
+    { 
+      return("Please make sure the categorical variables are at the beginning followed by all the numerical variables.")
+    }
+  })
+  
   observe({updateSelectInput(session,"color",choices=c('None',names(myData())), selected="None")})
   observe({updateSelectInput(session,"size",choices=c('None',names(myData())), selected="None")})
-  # observe({updateSelectInput(session,"symbol",choices=c('None',names(myData())), selected="None")})
-  # observe({updateSelectInput(session,"opacity",choices=names(myData()), selected="")})
+  observe({updateSelectInput(session,"var",choices=c(names(myData())), selected="")})
   observe({updateSelectInput(session,"color3D",choices=c('None',names(myData())), selected="None")})
   observe({updateSelectInput(session,"size3D",choices=c('None',names(myData())), selected="None")}) 
   
-  observeEvent(input$goButton, {
-    shinyalert("Check results in data analysis tab!",type="success")
-  })
+  observeEvent(
+    input$goButton,{shinyalert("Check results in data analysis tab!",type="success")}
+  )
   
   useData <- reactive({
     input$goButton
@@ -60,23 +77,59 @@ shinyServer(function(input, output, session){
         p <- ncol(dat)
         if(input$log) dat <- log(dat)
         if(input$std) dat <- scale(dat)
-        pca <- prcomp(dat, center=FALSE, scale=FALSE) #Unlike princomp, variances are computed with the usual divisor N - 1.
+        pca <- prcomp(dat, center=FALSE, scale=FALSE)
         list(mat=mat, dat=dat, pca=pca)
       }
     })
   })
   
-  #============== Data Summary
-  output$sum_table <- renderUI({
+  #============== Data Exploration & Summary
+  output$sum_plot <- renderPlot({
     input$goButton
-    if(!is.null(useData()))
-    {
+    if(input$var!="")
+    { 
       dat <- useData()$dat
-      print(dfSummary(dat), method = 'render', headings = FALSE, bootstrap.css = FALSE)
+      mat <- useData()$mat
+      if(input$var %in% colnames(dat))
+      {
+      hist_plot <- ggplot(mat, aes(x=mat[,input$var])) + 
+        geom_histogram(fill="steelblue",bins = 100, alpha=0.5, position="identity") +
+        theme_bw(base_size = 20) + xlab(input$var)+theme( legend.position = "none")
+      box_plot <- ggplot(mat, aes(x="",y=mat[,input$var])) +
+        geom_boxplot(fill = "steelblue", color = "black") + 
+        coord_flip() +  
+        theme_bw(base_size = 20) + xlab("")  + ylab(input$var)
+        theme(axis.text.y=element_blank(),axis.ticks.y=element_blank())
+      hist_plot + box_plot + plot_layout(nrow = 2, heights = c(2, 1))
+      }
+      else
+      {
+        bar_plot <- ggplot(mat, aes(x=mat[,input$var])) +
+          geom_bar(width=0.5, fill="steelblue") +
+          theme_bw(base_size = 20) + xlab(input$var)+theme( legend.position = "none") +
+          theme(axis.text.x = element_text(angle = 90, hjust = 1))
+        bar_plot
+      }
+    }
+  })
+  output$sum <- renderPrint({
+    input$goButton
+    if(input$var!="")
+    { 
+      dat <- useData()$dat
+      mat <- useData()$mat
+      if(input$var %in% colnames(dat))
+      {
+        summary(mat[,input$var])
+      }
+      else
+      {
+        table(mat[,input$var])
+      }
     }
   })
   
-  #==============  Two regular plots for PCA
+  #==============  Variance Plot for PCA
   output$pca_plot1 <- renderPlot({
     input$goButton
     if(!is.null(useData()))
@@ -84,12 +137,7 @@ shinyServer(function(input, output, session){
       isolate({
         pca <- useData()$pca; 
         p <- ncol(pca$x)
-        #sumpca <- matrix(rep(0,3*p), nrow = 3)
-        #sumpca[1,] <- pca$sdev^2
-        #sumpca[2,] <- cumsum(pca$sdev^2)
-        #sumpca[3,] <- cumsum(pca$sdev^2)/sum(pca$sdev^2)
-        
-        
+
         percent1 <- 100*(pca$sdev^2)/sum(pca$sdev^2)
         percent2 <- 100*cumsum(pca$sdev^2)/sum(pca$sdev^2)
         
@@ -108,54 +156,37 @@ shinyServer(function(input, output, session){
           theme(text = element_text(size=15),plot.title = element_text(hjust = 0.5))
         
         Var_Plot
-        # PC_Bi_Plot <- ggbiplot(pca,varname.size = 3)+
-        #   ggtitle("PC1 vs PC2 Plot")+
-        #   theme_minimal() + 
-        #   theme(text = element_text(size=15),plot.title = element_text(hjust = 0.5),aspect.ratio = 1)
-        # grid.arrange(Var_Plot, PC_Bi_Plot, ncol=2, widths=c(1,1))
-        #
-        # par(mfrow=c(1,2), mar=c(2,2,2,0)+.2,mgp=c(1.3,.3,0), tck=-0.02,
-        #   cex.axis=1.3, cex.lab=1.3, cex.main=1.3)
-        # plot(pca, main='Variance of Principle Components', ylim = c(0,pca$sdev[1]^2*1.2))
-        # with(pca,
-        #    text(x = (1:p*1.1),
-        #         y = pca$sdev^2,
-        #         labels = paste(round(sumpca[3,]*100, 1),"%"),
-        #         pos = 3, cex = 1.3))
-        # biplot(pca, cex=1.3) #, scale=1
-        
       })
     }
   })
   
-  output$text1 <- renderText("Percentages on top of each bar represent the percentage of variance explained by that principle component and the cumulative percentage in the parentheses")
-  
-  lines <- reactive({
-    # if (input$scatterD3_threshold_line) {
-    #   return(rbind(default_lines, threshold_line))
-    # }
-    default_lines
+  output$text1 <- renderText({
+    input$goButton
+    if(!is.null(useData()))
+    { 
+      "Percentages on top of each bar represent the percentage of variance explained by that principle component and the cumulative percentage in the parentheses"
+    }  
   })
   
   #==============  Interactive 2D Scatter Plot for PCA
+  lines <- reactive({
+    default_lines
+  })
+  
   output$pca_plot2 <- renderScatterD3({
-    #input$goButton
+    input$goButton
     if(!is.null(useData()))
     { 
-      
-      
-      
       pca <- useData()$pca;
       p <- ncol(pca$x)
-      mat <- useData()$mat; #nams <- names(mat)
+      mat <- useData()$mat; 
       mat$x <- pca$x[,1];
-      mat$y <- pca$x[,2]; # you can add input to specify which 2 PC
+      mat$y <- pca$x[,2]; 
       mat$lab <- row.names(mat)
       mat$foo <- rep(1, nrow(mat))
       
       col_var <- if (input$color == "None") NULL else mat[,input$color]
       size_var <- if (input$size == "None") NULL else mat[,input$size]
-      # symbol_var <- if (input$symbol == "None") NULL else mat[,input$symbol]
       symbol_var <- NULL
       
       scatterD3(
@@ -182,11 +213,8 @@ shinyServer(function(input, output, session){
         legend_font_size = "150%",
         transitions = TRUE
       )
-      
-      
     }
   })
-  
   
   #============== Interactive 3D Scatter Plot for PCA
   
@@ -194,7 +222,6 @@ shinyServer(function(input, output, session){
     input$goButton
     if(!is.null(useData()))
     { 
-      
       pca <- useData()$pca; 
       p <- ncol(pca$x)
       
@@ -203,8 +230,6 @@ shinyServer(function(input, output, session){
       
       col_3D <- if (input$color3D == "None") "None" else mat[,input$color3D]
       size_3D <- if (input$size3D == "None") 0.2 else mat[,input$size3D]
-      
-      
       
       ply <- plot_ly(x = ~pca$x[,1], y = ~pca$x[,2], z = ~pca$x[,3] ,color=~col_3D,showscale = TRUE,size = ~as.numeric(size_3D),sizes=c(10,20)) %>%
         add_markers(marker = list(symbol = 'circle', sizemode = 'diameter',opacity = input$opacity_3D,
@@ -221,44 +246,12 @@ shinyServer(function(input, output, session){
                             yaxis = list(title = paste0("PC2 ","(",summary(pca)$importance[2,2]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),
                             zaxis = list(title = paste0("PC3 ","(",summary(pca)$importance[2,3]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),camera = list(eye = list(x = -1.0, y = 1.25, z = 1.25),aspectmode = "manual",aspectratio = list(x=1, y=0.5, z=0.5))),
                paper_bgcolor = 'rgb(255, 255, 255)',
-               plot_bgcolor = 'rgb(169, 236, 253)')  #243, 243, 243
+               plot_bgcolor = 'rgb(169, 236, 253)')
       
       ply
-      
-      
     }
   })
-  
-  
-  
-  
-  ####output$pca_plot4 <- renderPlot({
-  ###input$goButton
-  ##if(!is.null(useData()))
-  #{ 
-  #isolate({
-  # pca <- useData()$pca; 
-  #        p <- ncol(pca$x)
-  #        rgl_init <- function(new.device = FALSE, bg = "white", width = 640) { 
-  #          if( new.device | rgl.cur() == 0 ) {
-  #            rgl.open()
-  #            par3d(windowRect = 50 + c( 0, 0, width, width ) )
-  ##            rgl.bg(color = bg )
-  #          }  #####function make sure rgl device open
-  #          rgl.clear(type = c("shapes", "bboxdeco"))
-  #          rgl.viewpoint(theta = 15, phi = 20, zoom = 0.7)
-  #        }#####function make sure rgl device open
-  #        rgl_init()
-  #        a<-rgl.spheres(pca$x[,1], pca$x[,2], pca$x[,3], r = 0.2, color = "yellow")  # Scatter plot
-  
-  #        a  
-  
-  #      })
-  #    }
-  #  })
-  
-  
-  
+
   #==============  Clustering
   output$cl_plot1 <- renderPlot({
     input$goButton
@@ -284,7 +277,7 @@ shinyServer(function(input, output, session){
       dat <- useData()$dat
       hc <- hclust(dist(dat))
       plot(hc, main = "Hierarchical Clustering Dendrogram", xlab = "", ylab= "", sub = "", labels = mat[,input$k3])
-      rect.hclust(hc, k = input$k2)
+      rect.hclust(hc, k = input$k2, border = 1:input$k2)
     }
   })
   
@@ -301,5 +294,3 @@ shinyServer(function(input, output, session){
   })
   
 }) 
-
-
