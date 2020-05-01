@@ -78,6 +78,9 @@ dashboardPage(
       # Third-I tab content
       tabItem(tabName = "summary",
         h2("Data Exploration & Summary", align = "center"),
+        textOutput("csv_name1"),
+        tags$head(tags$style("#csv_name1{color: blue; font-size: 18px; font-style: normal;text-align:center")),
+        br(),
         fluidRow(
           style = "margin-top:1em",
           column(6, selectInput( "var", label = h5("Variable"), ""))
@@ -92,6 +95,9 @@ dashboardPage(
       # Third-II tab content
       tabItem(tabName = "pca",
         h2("Principal Component Analysis",align="center"),
+        textOutput("csv_name2"),
+        tags$head(tags$style("#csv_name2{color: blue; font-size: 18px; font-style: normal;text-align:center")),
+        br(),
         fluidRow(
           tabBox(
             id = "tabset", height = "400px",width = 12,
@@ -153,10 +159,13 @@ dashboardPage(
       # Third-III tab content
       tabItem(tabName = "clustering",
         h2("Clustering Analysis",align="center"),
+        textOutput("csv_name3"),
+        tags$head(tags$style("#csv_name3{color: blue; font-size: 18px; font-style: normal;text-align:center")),
+        br(),
         fluidRow(
           tabBox(
             id = "tabset", height = "400px",width = 12,
-            tabPanel("Partitional Clustering",plotOutput("cl_plot1", width = "100%", height = "400px"),
+            tabPanel("Partitional Clustering",plotOutput("cl_plot1", width = "100%", height = "500px"),
               fluidRow(
                 column(3, numericInput( "k1", label = h5("Number of Clusters"), value=2, min=1))
               )

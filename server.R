@@ -45,6 +45,28 @@ shinyServer(function(input, output, session){
     {input$file}
   })
   
+  output$csv_name1 <- renderText({
+    input$goButton
+    if (!is.null(inFile()$datapath))
+    {return(basename(inFile()$name))}
+    else 
+    {return(NULL)}
+  })
+  output$csv_name2 <- renderText({
+    input$goButton
+    if (!is.null(inFile()$datapath))
+    {return(basename(inFile()$name))}
+    else 
+    {return(NULL)}
+  })
+  output$csv_name3 <- renderText({
+    input$goButton
+    if (!is.null(inFile()$datapath))
+    {return(basename(inFile()$name))}
+    else 
+    {return(NULL)}
+  })
+  
   myData <- reactive({
     if (is.null(inFile())) 
     {return(NULL)} 
