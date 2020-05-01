@@ -27,6 +27,8 @@ default_lines <- data.frame(
 
 
 shinyServer(function(input, output, session){
+
+  #============== Data Input & Preprocessing
   
   output$style_tag <- renderUI({
     if(input$sidebar=='intro')
@@ -57,9 +59,11 @@ shinyServer(function(input, output, session){
     }
   })
   
+
   observe({updateSelectInput(session,"color",choices=c('None',names(myData())), selected="None")})
   observe({updateSelectInput(session,"size",choices=c('None',names(myData())), selected="None")})
   observe({updateSelectInput(session,"var",choices=c(names(myData())), selected="")})
+
   observe({updateSelectInput(session,"color3D",choices=c('None',names(myData())), selected="None")})
   observe({updateSelectInput(session,"size3D",choices=c('None',names(myData())), selected="None")}) 
   
@@ -75,6 +79,16 @@ shinyServer(function(input, output, session){
         nams <- names(mat <- myData())
         dat <- mat[, input$start:ncol(mat)]
         p <- ncol(dat)
+        
+        observe({updateSelectInput(session,"D2_pc_x",choices=as.character(1:p), selected="1")})
+        observe({updateSelectInput(session,"D2_pc_y",choices=as.character(c(1:p)[-as.numeric(input$D2_pc_x)]), selected="2")})
+        
+        observe({updateSelectInput(session,"pc_sort",choices=as.character(1:p), selected="1")})
+        
+        observe({updateSelectInput(session,"D3_pc_x",choices=as.character(1:p), selected="1")})
+        observe({updateSelectInput(session,"D3_pc_y",choices=as.character(c(1:p)[-as.numeric(input$D3_pc_x)]), selected="2")})
+        observe({updateSelectInput(session,"D3_pc_z",choices=as.character(c(1:p)[!c(1:p) %in% c(as.numeric(input$D3_pc_x),as.numeric(input$D3_pc_y))]), selected="3")})
+        
         if(input$log) dat <- log(dat)
         if(input$std) dat <- scale(dat)
         pca <- prcomp(dat, center=FALSE, scale=FALSE)
@@ -129,7 +143,9 @@ shinyServer(function(input, output, session){
     }
   })
   
-  #==============  Variance Plot for PCA
+  #==============  Principal Component Analysis
+  
+  #==============  Tab-1: Variance Plot
   output$pca_plot1 <- renderPlot({
     input$goButton
     if(!is.null(useData()))
@@ -168,7 +184,7 @@ shinyServer(function(input, output, session){
     }  
   })
   
-  #==============  Interactive 2D Scatter Plot for PCA
+  #==============  Tab-2: 2D Scatter Plot
   lines <- reactive({
     default_lines
   })
@@ -180,8 +196,10 @@ shinyServer(function(input, output, session){
       pca <- useData()$pca;
       p <- ncol(pca$x)
       mat <- useData()$mat; 
-      mat$x <- pca$x[,1];
-      mat$y <- pca$x[,2]; 
+      first <- as.numeric(input$D2_pc_x)
+      second <- as.numeric(input$D2_pc_y)
+      mat$x <- pca$x[,first];
+      mat$y <- pca$x[,second]; 
       mat$lab <- row.names(mat)
       mat$foo <- rep(1, nrow(mat))
       
@@ -192,8 +210,8 @@ shinyServer(function(input, output, session){
       scatterD3(
         x = mat$x,
         y = mat$y,
-        xlab='PC1',
-        ylab='PC2',
+        xlab=paste("PC",first,sep=''),
+        ylab=paste("PC",second,sep=''),
         lab = mat$lab,
         col_var = col_var,
         col_lab = input$color,
@@ -216,8 +234,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  #============== Interactive 3D Scatter Plot for PCA
-  
+  #==============  Tab-3: 3D Scatter Plot
   output$pca_plot4 <- renderPlotly({
     input$goButton
     if(!is.null(useData()))
@@ -228,31 +245,55 @@ shinyServer(function(input, output, session){
       mat <- useData()$mat; 
       mat$lab <- mat[,1]##suppose the 1st column has obs names
       
+      i <- as.numeric(input$D3_pc_x)
+      j <- as.numeric(input$D3_pc_y)
+      k <- as.numeric(input$D3_pc_z)
+      
       col_3D <- if (input$color3D == "None") "None" else mat[,input$color3D]
       size_3D <- if (input$size3D == "None") 0.2 else mat[,input$size3D]
       
-      ply <- plot_ly(x = ~pca$x[,1], y = ~pca$x[,2], z = ~pca$x[,3] ,color=~col_3D,showscale = TRUE,size = ~as.numeric(size_3D),sizes=c(10,20)) %>%
+      ply <- plot_ly(x = ~pca$x[,i], y = ~pca$x[,j], z = ~pca$x[,k] ,color=~col_3D,showscale = TRUE,size = ~as.numeric(size_3D),sizes=c(10,20)) %>%
         add_markers(marker = list(symbol = 'circle', sizemode = 'diameter',opacity = input$opacity_3D,
                                   showlegend = T),
                     text = ~paste('Obsevation:', mat$lab),
                     hovertemplate = paste(
                       "<b>%{text}</b><br>",
-                      "PC1: %{x}<br>",
-                      "PC2: %{y}<br>",
-                      "PC3: %{z}",
+                      "PC",input$D3_pc_x,": %{x}<br>",
+                      "PC",input$D3_pc_y,": %{y}<br>",
+                      "PC",input$D3_pc_z,": %{z}",
                       "<extra></extra>"
-                    )) %>%
-        layout(scene = list(xaxis = list(title = paste0("PC1 ","(",summary(pca)$importance[2,1]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),
-                            yaxis = list(title = paste0("PC2 ","(",summary(pca)$importance[2,2]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),
-                            zaxis = list(title = paste0("PC3 ","(",summary(pca)$importance[2,3]*100,"%)"),range = c(floor(min(pca$x[,1],pca$x[,2],pca$x[,3])),ceiling(max(pca$x[,1],pca$x[,2],pca$x[,3]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),camera = list(eye = list(x = -1.0, y = 1.25, z = 1.25),aspectmode = "manual",aspectratio = list(x=1, y=0.5, z=0.5))),
+                    ,sep = '')) %>%
+        layout(scene = list(xaxis = list(title = paste0("PC",i,"(",round(summary(pca)$importance[2,i]*100,1),"%)",sep=''),range = c(floor(min(pca$x[,i],pca$x[,j],pca$x[,k])),ceiling(max(pca$x[,i],pca$x[,j],pca$x[,k]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),
+                            yaxis = list(title = paste0("PC",j,"(",round(summary(pca)$importance[2,j]*100,1),"%)",sep=''),range = c(floor(min(pca$x[,i],pca$x[,j],pca$x[,k])),ceiling(max(pca$x[,i],pca$x[,j],pca$x[,k]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),
+                            zaxis = list(title = paste0("PC",k,"(",round(summary(pca)$importance[2,k]*100,1),"%)",sep=''),range = c(floor(min(pca$x[,i],pca$x[,j],pca$x[,k])),ceiling(max(pca$x[,i],pca$x[,j],pca$x[,k]))),dtick = 1,gridwidth = 2, backgroundcolor='rgb(230, 230,230)',gridcolor='rgb(255, 255, 255)',zerolinecolor='rgb(255, 255, 255)',showbackground=TRUE),camera = list(eye = list(x = -1.0, y = 1.25, z = 1.25),aspectmode = "manual",aspectratio = list(x=1, y=0.5, z=0.5))),
                paper_bgcolor = 'rgb(255, 255, 255)',
                plot_bgcolor = 'rgb(169, 236, 253)')
       
       ply
     }
   })
-
-  #==============  Clustering
+  
+  #==============  Tab-4: Variable Importance
+  output$pca_table <- renderTable({
+    input$goButton
+    if(!is.null(useData()))
+    {
+        mat <- myData()
+        nams <- names(mat)[input$start:ncol(mat)]
+        pca <- useData()$pca
+        p <- ncol(pca$x)
+        loadpca <- pca$rotation
+        Ind <- order(abs(loadpca[,as.numeric(input$pc_sort)]),decreasing = T)
+        pcMat <- matrix(c(nams[Ind],round(loadpca[Ind,1:p],3)),ncol=p+1)
+        namMat <- c('variable', paste("PC",1:p,sep = ''))
+        rbind(as.character(namMat), pcMat)
+    }
+  },include.colnames=FALSE)
+  
+  
+  #==============  Clustering Analysis
+  
+  #==============  Tab-1: Partitional Clustering
   output$cl_plot1 <- renderPlot({
     input$goButton
     if(!is.null(useData())){ 
@@ -269,6 +310,7 @@ shinyServer(function(input, output, session){
     }
   })
   
+  #==============  Tab-2: Hierarchical Clustering 
   # Dendrogram
   output$cl_plot2 <- renderPlot({
     input$goButton
@@ -281,7 +323,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  # Cluster Table
+  # Data table corresponding to each cluster
   output$cl_table <- renderTable({
     input$goButton
     if(!is.null(useData())){

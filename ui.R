@@ -100,7 +100,13 @@ dashboardPage(
               textOutput("text1"),
               tags$head(tags$style("#text1{color: blue; font-size: 18px; font-style: normal;}"))
             ),
-            tabPanel("2D Scatter Plot",scatterD3Output("pca_plot2", width = "100%", height = "450px"),
+            tabPanel("2D Scatter Plot",
+              fluidRow(
+                column(4, selectInput( "D2_pc_x", label = h5("PC to be displayed on x-axis"), "")),
+                column(4, selectInput( "D2_pc_y", label = h5("PC to be displayed on y-axis"), ""))
+              ),
+              br(),
+              scatterD3Output("pca_plot2", width = "100%", height = "450px"),
               fluidRow(
                 style = "margin-top:-1em",
                 column(4, selectInput( "color", label = h5("Color"), "")),
@@ -115,17 +121,31 @@ dashboardPage(
               )
             ),
             tabPanel("3D Scatter Plot",
+              fluidRow(
+                column(4, selectInput( "D3_pc_x", label = h5("PC to be displayed on x-axis"), "")),
+                column(4, selectInput( "D3_pc_y", label = h5("PC to be displayed on y-axis"), "")),
+                column(4, selectInput( "D3_pc_z", label = h5("PC to be displayed on z-axis"), ""))
+              ),
+              br(),
               plotlyOutput("pca_plot4", width = "100%", height = "500px"),
-                fluidRow(
-                  style = "margin-top:3em",
-                  column(4, selectInput( "color3D", label = h5("Color"), "")),
-                  column(4, selectInput( "size3D", label = h5("Size"), "")),
-                  column(4, popover(title="What does 3D plot show?", content="3D plot shows each observation on fisrt three PCs coordinate system"))
-                ),
-                fluidRow(
-                  column(4, sliderInput("opacity_3D", h5("Points opacity"), min = 0, max = 1, value = 1, step = 0.05))
-                )
-             )
+              fluidRow(
+                style = "margin-top:3em",
+                column(4, selectInput( "color3D", label = h5("Color"), "")),
+                column(4, selectInput( "size3D", label = h5("Size"), "")),
+                column(4, popover(title="What does 3D plot show?", content="3D plot shows each observation on first three PCs coordinate system"))
+              ),
+              fluidRow(
+                column(4, sliderInput("opacity_3D", h5("Points opacity"), min = 0, max = 1, value = 1, step = 0.05))
+              )
+            ),
+            tabPanel("Variable Importance",
+              fluidRow(
+                column(4, selectInput( "pc_sort", label = h5("Sort the variables by their loading to PC"), ""))
+              ),
+              br(),
+              #tableOutput("pca_table")
+              div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;", tableOutput('pca_table'))
+            )
           )
         )
       ),
@@ -138,16 +158,17 @@ dashboardPage(
             id = "tabset", height = "400px",width = 12,
             tabPanel("Partitional Clustering",plotOutput("cl_plot1", width = "100%", height = "400px"),
               fluidRow(
-                column(3, numericInput( "k1", label = h5("Number of Clusters"), value=4, min=1))
+                column(3, numericInput( "k1", label = h5("Number of Clusters"), value=2, min=1))
               )
             ),
             tabPanel("Hierarchical Clustering",plotOutput("cl_plot2", width = "100%", height = "400px"),
               fluidRow(
-                column(3, numericInput( "k2", label = h5("Number of Clusters"), value=4, min=1)),
+                column(3, numericInput( "k2", label = h5("Number of Clusters"), value=2, min=1)),
                 column(3, numericInput("k3", label = h5("Column with Label"), value=1, min=1)),
                 column(3, numericInput("k4", label = h5("Which Cluster for Table"), value=1, min=1))
               ),
-              tableOutput("cl_table")
+              #tableOutput("cl_table")
+              div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;", tableOutput('cl_table'))
             )
           )
         )
