@@ -164,7 +164,7 @@ dashboardPage(
         br(),
         fluidRow(
           tabBox(
-            id = "tabset", height = "400px",width = 12,
+            id = "tabset", height = "1100px",width = 12,
             tabPanel("Partitional Clustering",plotOutput("cl_plot1", width = "100%", height = "500px"),
               fluidRow(
                 column(3, numericInput( "k1", label = h5("Number of Clusters"), value=2, min=1))
