@@ -324,7 +324,7 @@ shinyServer(function(input, output, session){
       
       dat <- useData()$dat
       
-      #require(cluster)
+      require(cluster)
       cl <- pam(x=dat, k=input$k1, diss=FALSE, metric='euclidean')
       
       par(mfrow=c(1,2), mar=c(2,3,2,0)+.4,mgp=c(1.3,.3,0), tck=-0.02, cex.axis=1.3, 
