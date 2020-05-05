@@ -14,6 +14,7 @@ suppressMessages(library(rgl))
 suppressMessages(library(dendextend))
 suppressMessages(library(summarytools))
 suppressMessages(library(patchwork))
+suppressMessages(library(factoextra))
 
 options(shiny.maxRequestSize=30*1024^2)  ##set file to 30MB
 
@@ -307,10 +308,11 @@ shinyServer(function(input, output, session){
         loadpca <- pca$rotation
         Ind <- order(abs(loadpca[,as.numeric(input$pc_sort)]),decreasing = T)
         pcMat <- matrix(c(nams[Ind],round(loadpca[Ind,1:p],3)),ncol=p+1)
-        namMat <- c('variable', paste("PC",1:p,sep = ''))
+        namMat <- c('Variable', paste("PC",1:p,sep = ''))
         rbind(as.character(namMat), pcMat)
     }
-  },include.colnames=FALSE)
+  },include.colnames=FALSE,fixedHeader=TRUE,
+  fixedColumns = list(leftColumns = 1, rightColumns = 0))
   
   
   #==============  Clustering Analysis
@@ -322,12 +324,16 @@ shinyServer(function(input, output, session){
       
       dat <- useData()$dat
       
-      require(cluster)
+      #require(cluster)
       cl <- pam(x=dat, k=input$k1, diss=FALSE, metric='euclidean')
       
       par(mfrow=c(1,2), mar=c(2,3,2,0)+.4,mgp=c(1.3,.3,0), tck=-0.02, cex.axis=1.3, 
           cex.lab=1.3, cex.main=1.3)
-      plot(cl, which=1, main="Partitional Clustering Scatter Plot") #check ?plot.partition for interpretation and more options
+      #plot(cl, which=1, main="Partitional Clustering Scatter Plot") #check ?plot.partition for interpretation and more options
+      fviz_cluster(cl,ellipse.type = "norm")+theme_bw()+
+        ggtitle("Partitional Clustering Scatter Plot")+ 
+        xlab("Component-1") + ylab("Component-2") +
+        theme(axis.text.x = element_text(size = 15, color = "red"),text = element_text(size=15),plot.title = element_text(size = 18, color = "black",hjust = 0.5))
       
     }
   })
