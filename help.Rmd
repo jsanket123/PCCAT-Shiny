@@ -7,6 +7,8 @@ output: html_fragment
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+# Frequently Asked Questions
+
 ### How should I input CSV data?
 
 These are simple yet strict RULES for data input into PCCAT. There is an example below.  
