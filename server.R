@@ -82,13 +82,13 @@ shinyServer(function(input, output, session){
     }
   })
   
+  observe({updateSelectInput(session,"var",choices=c(names(myData()[,-1])), selected="")})
 
-  observe({updateSelectInput(session,"color",choices=c('None',names(myData())), selected="None")})
-  observe({updateSelectInput(session,"size",choices=c('None',names(myData())), selected="None")})
-  observe({updateSelectInput(session,"var",choices=c(names(myData())), selected="")})
-
-  observe({updateSelectInput(session,"color3D",choices=c('None',names(myData())), selected="None")})
-  observe({updateSelectInput(session,"size3D",choices=c('None',names(myData())), selected="None")}) 
+  observe({updateSelectInput(session,"color",choices=c('None',names(myData()[,-1])), selected="None")})
+  observe({updateSelectInput(session,"size",choices=c('None',names(myData()[,-c(1:(input$start-1))])), selected="None")})
+  
+  observe({updateSelectInput(session,"color3D",choices=c('None',names(myData()[,-1])), selected="None")})
+  observe({updateSelectInput(session,"size3D",choices=c('None',names(myData()[,-c(1:(input$start-1))])), selected="None")}) 
   
   observeEvent(
     input$goButton,{shinyalert("Check results in data analysis tab!",type="success")}
