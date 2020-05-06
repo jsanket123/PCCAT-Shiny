@@ -1,6 +1,6 @@
 ---
 title: "Frequently Asked Questions"
-output: html_document
+output: html_fragment
 ---
 
 ```{r setup, include=FALSE}
