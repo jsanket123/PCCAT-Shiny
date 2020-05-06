@@ -100,7 +100,7 @@ dashboardPage(
         br(),
         fluidRow(
           tabBox(
-            id = "tabset", height = "400px",width = 12,
+            id = "tabset", height = "1000px",width = 12,
             tabPanel("Variance Plot",
               plotOutput("pca_plot1", width = "100%", height = "450px"),
               textOutput("text1"),
