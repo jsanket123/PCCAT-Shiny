@@ -51,7 +51,7 @@ dashboardPage(
           column(12,fileInput("file", label = ("")),offset=0.2)
         ),
         textOutput("text2"),
-        tags$head(tags$style("#text2{color: blue; font-size: 18px; font-style: normal;}")),
+        tags$head(tags$style("#text2{color: blue; font-size: 16px; font-style: normal;}")),
       
         
         h4(strong("Select variables:")),
@@ -59,6 +59,8 @@ dashboardPage(
           style = "margin-top:-1em",
           column(3, numericInput( "start", label = h5("Numerical Variables Start Column"), value=3, min=1),offset = 0.2)
         ),
+        htmlOutput("text3"),
+        tags$head(tags$style("#text3{color: blue; font-size: 16px; font-style: normal;}")),
               
         h4(strong("Data transformation Options:")),
         fluidRow(
@@ -66,6 +68,8 @@ dashboardPage(
           column(3, checkboxInput("std",label = "Standardize?", TRUE),offset = 0.2),
           column(3, checkboxInput("log",label = "Log-transform?", FALSE)) 
         ),
+        textOutput("text4"),
+        tags$head(tags$style("#text4{color: blue; font-size: 16px; font-style: normal;}")),
               
         br(),
         fluidRow(

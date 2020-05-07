@@ -78,7 +78,22 @@ shinyServer(function(input, output, session){
   output$text2 <- renderText({
     if(!is.null(myData()))
     { 
-      return("Please make sure the categorical variables are at the beginning followed by all the numerical variables.")
+      return("Please follow the rules mentioned in help section for the input data file format.")
+    }
+  })
+  
+  output$text3 <- renderUI({
+    if(!is.null(myData()))
+    {
+      HTML(paste("Ex.1: In Iris dataset numerical features start from column-3.",
+              "Ex.2: In Mtcars dataset numerical features start from column-4.",sep="<br/>"))
+    }
+  })
+
+  output$text4 <- renderText({
+    if(!is.null(myData()))
+    { 
+      return("Please refer to the help section for when to apply these data transformations.")
     }
   })
   
@@ -278,7 +293,7 @@ shinyServer(function(input, output, session){
       ply <- plot_ly(x = ~pca$x[,i], y = ~pca$x[,j], z = ~pca$x[,k] ,color=~col_3D,showscale = TRUE,size = ~as.numeric(size_3D),sizes=c(10,20)) %>%
         add_markers(marker = list(symbol = 'circle', sizemode = 'diameter',opacity = input$opacity_3D,
                                   showlegend = T),
-                    text = ~paste('Obsevation:', mat$lab),
+                    text = ~paste('Observation:', mat$lab),
                     hovertemplate = paste(
                       "<b>%{text}</b><br>",
                       "PC",input$D3_pc_x,": %{x}<br>",
