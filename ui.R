@@ -38,7 +38,10 @@ dashboardPage(
         fluidRow(
           column(2, style="text-align: center;", box(width = NULL, img(src="CSTATLogo.png",height = '100%', width = '100%', alt='EGLE logo'))),
           column(8, includeHTML("intro.html")),
-          column(2, style="text-align: center;", box(width = NULL, img(src="MI_EGLE.png",height = '100%', width = '100%', align='middle',alt='EGLE logo')))
+
+          column(2, style="text-align: center;", box(width = NULL, img(src="MI_EGLE.png",height = '100%', width = '100%', align='middle',alt='EGLE logo'))),
+          ## comment out the line below, if this is not of interest
+          column(8, h4( "Date last used ", textOutput("currentDate", container = span)))
         )
       ),
       
@@ -51,7 +54,7 @@ dashboardPage(
           column(12,fileInput("file", label = ("")),offset=0.2)
         ),
         textOutput("text2"),
-        tags$head(tags$style("#text2{color: blue; font-size: 18px; font-style: normal;}")),
+        tags$head(tags$style("#text2{color: blue; font-size: 16px; font-style: normal;}")),
       
         
         h4(strong("Select variables:")),
@@ -59,6 +62,8 @@ dashboardPage(
           style = "margin-top:-1em",
           column(3, numericInput( "start", label = h5("Numerical Variables Start Column"), value=3, min=1),offset = 0.2)
         ),
+        htmlOutput("text3"),
+        tags$head(tags$style("#text3{color: blue; font-size: 16px; font-style: normal;}")),
               
         h4(strong("Data transformation Options:")),
         fluidRow(
@@ -66,6 +71,8 @@ dashboardPage(
           column(3, checkboxInput("std",label = "Standardize?", TRUE),offset = 0.2),
           column(3, checkboxInput("log",label = "Log-transform?", FALSE)) 
         ),
+        textOutput("text4"),
+        tags$head(tags$style("#text4{color: blue; font-size: 16px; font-style: normal;}")),
               
         br(),
         fluidRow(
