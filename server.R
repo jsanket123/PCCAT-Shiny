@@ -26,7 +26,7 @@ default_lines <- data.frame(
   stroke_dasharray = c(5, 5)
 )
 
-set.seed(12)
+set.seed(as.integer(Sys.time()))
 
 shinyServer(function(input, output, session){
 
