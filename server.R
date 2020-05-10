@@ -29,6 +29,11 @@ default_lines <- data.frame(
 set.seed(as.integer(Sys.time()))
 
 shinyServer(function(input, output, session){
+  
+  #============== Date modified
+  output$currentDate <- renderText({
+    as.character(format(Sys.time(), '%Y-%m-%d %H:%M'))
+  })
 
   #============== Data Input & Preprocessing
   

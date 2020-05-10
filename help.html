@@ -24,7 +24,7 @@
   <li>Your first row, Row 1 must have the Header Row as below. Actual data must start on Row 2.</li>
   <li>All laboratory analytical data should be in the exact same units (organics, inorganics, should be in consistent units, ppt, ppb, ppm).</li>
   <li>All laboratory analytical data non-detects must be treated in the exact same way, i.e., using zero (0) for ND, or <span class="fraction">1/2</span> the detection limit, but you must be consistent throughout the data. Note: Do not use parameters that have more than 75% non-detects in your PCCAT CSV, as there is not enough differentiation if the parameter is mostly non-detect.</li>
-  <li>All data fields must have a value. Do not leave a data field empty. See the example below: <br>
+ <li>All data fields must have a value. Do not leave a data field empty. See the example below: <br>
     <img src="data_field_example.png" alt="Data example" class="responsive" width="600" height="400"><br>
     In the above analytical data set,<br>
     <ul>
@@ -34,9 +34,12 @@
       <li>Columns C through I are individual parameters in ng/l, with non-detects coded as zero (0).<br></li>
       <li>All cells have a value in them, there are no blanks. Worksheet is saved as a CSV file prior to uploading into PCCAT and numerical features start from Column-3.<br></li>
       <li>NOTE: The group Column B is optional, but highly suggested for environmental data. For instance, Group can be location based (Groundwater/Surface Water, Field Blank, Upstream/Downstream) or year based (2002, 2007, 2020), or both (GW_2002, GW_2007, GW_2020, SW_2002, SW_2007, SW_2020). Try to use 2-6 groups to help in the visualization. If you do not include a Group in Column B of your CSV, you must indicate that your numerical features start in column 2 in the Data Input tab.</li>
+      <li><font style="color:#ff0000;">Tidy data principles</font> (see below): It is helpful to add a separate column for location and a separate column for date or year and adjust the start column of the numerical features in the Data Input tab.</li>
     </ul></li>
 </ol>
 </div>
+
+
 
 <div id="data_transformation" class="section level3">
 <h3>Q2. What are my data transformation options?</h3>
@@ -69,13 +72,24 @@
 
 <div id="statistics_at_msu" class="section level3">
 <h3>1. Information on statistics at MSU</h3>
-<p style="font-size:18px;text-align:justify;">Check with MSU-CSTAT for upcoming online and in person classes in R and statistics at: <a href="https://cstat.msu.edu/events" class="uri">https://cstat.msu.edu/events</a></p>
+<p style="font-size:18px;text-align:justify;">Check with MSU-CSTAT for upcoming online and in-person classes in R and statistics at: <a href="https://cstat.msu.edu/events" class="uri">https://cstat.msu.edu/events</a></p>
 </div>
 
 <div id="pccat_use" class="section level3">
 <h3>2. Information on PCCAT use in State of Michigan EGLE</h3>
 <p style="font-size:18px;text-align:justify;">If you need assistance with formatting EGLE environmental data and using PCCAT at the State of Michigan, contact Arthur Ostaszewski (<a href="mailto:ostaszewskia@michigan.gov" class="email">ostaszewskia@michigan.gov</a>) of the Materials Management Division, Hazardous Waste section.</p>
 </div>
+
+<div id="pccat_use" class="section level3">
+<h3>3. Tidy data is a standard way of mapping the meaning of a dataset to its structure. </h3>
+<ul  style="font-size:18px;text-align:justify;">
+<li>Each variable forms a column.</li>
+<li>Each observation forms a row.</li>
+<li>Each type of observational unit forms a table.</li>
+</ul>
+<p style="font-size:18px;text-align:justify;"><i> Reference:</i> <a href="https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html" class="uri">R Vignette tidy data </a> </p>
+</div>
+
 
 </div>
 </div>
