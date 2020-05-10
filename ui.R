@@ -38,10 +38,9 @@ dashboardPage(
         fluidRow(
           column(2, style="text-align: center;", box(width = NULL, img(src="CSTATLogo.png",height = '100%', width = '100%', alt='EGLE logo'))),
           column(8, includeHTML("intro.html")),
-
           column(2, style="text-align: center;", box(width = NULL, img(src="MI_EGLE.png",height = '100%', width = '100%', align='middle',alt='EGLE logo'))),
           ## comment out the line below, if this is not of interest
-          column(6, h4( "Last used [24hr]: ", textOutput("currentDate", container = span)))
+          column(8, h4("Last Used (24-hour format): ", textOutput("currentDate", container = span)))
         )
       ),
       

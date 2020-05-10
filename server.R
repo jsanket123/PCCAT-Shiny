@@ -32,7 +32,7 @@ shinyServer(function(input, output, session){
   
   #============== Date modified
   output$currentDate <- renderText({
-    as.character(format(Sys.time(), '%Y-%m-%d : %H:%M'))
+    as.character(format(Sys.time(), '%Y-%m-%d %H:%M'))
   })
 
   #============== Data Input & Preprocessing
