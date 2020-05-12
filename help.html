@@ -1,156 +1,98 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-
-<head>
-
-<meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="pandoc" />
-
-
-
-
-<title></title>
-
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
-}
-</script>
-
-
-
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
-
-
-</head>
-
 <body>
 
-<style type="text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.responsive {
+  width: 100%;
   height: auto;
-}
-.tabbed-pane {
-  padding-top: 12px;
-}
-.html-widget {
-  margin-bottom: 20px;
-}
-button.code-folding-btn:focus {
-  outline: none;
 }
 </style>
 
-
-
 <div class="container-fluid main-container">
-
-<!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
-
-<!-- code folding -->
-
-
-
-
-
-
-<div class="fluid-row" id="header">
-
-
-
-
-</div>
-
-
 <div id="content" class="section level4">
-<h2>PCCAT: Principle Component and Clustering Analysis Tool</h2>
+  
+<h1 style="font-size:30px;text-align:left;">Frequently Asked Questions</h1>
 
-<p>PCCAT is an add-on module for R designed for Michigan Department of Environmental Quality (MDEQ) clients via Center for Statistical Training and Consulting (CSTAT). It is mainly designed for multivariate environmental data analysis. Based on statistical software R functions and packages, it consists of four main steps: pre-processing, visualization, principle component analysis and clustering analysis. It has been designed to be user-friendly with graphic output and user prompts to take advantage of the many useful functions and packages coded in R, combined with Excel for data analysis</p>
-
-<p>You can download an example <a href="crab.csv" target="_blank">dataset</a> for demo. For any questions or interests, please <a href="mailto:zhangquake@gmail.com">contact</a> us or visit <a href="https://github.com/zhangz19/PCCAT" target="_blank">PCCAT</a> homepage.</p>
-
-<p>Last modified: Fri Jan 31 2020.</p>
+<div id="data_input" class="section level3">
+<h3>Q1. How should I input my data?</h3>
+<p style="font-size:18px;text-align:justify;">Your input data file must be a CSV file that follows the simple yet strict rules given below:</p>
+<ol style="list-style-type: decimal;font-size:18px;text-align:justify;">
+  <li>The CSV files must be in the form of Column A = SampleID (a unique value for every row), Column B = Group (logical grouping in your data), and Column C onwards = all the  numerical variables. (If you are planning to include more categorical features then add them after the Group variable and before all the numerical features and indicate your numerical feature start column appropriately.)</li>
+  <li>Your first row, Row 1 must have the Header Row as below. Actual data must start on Row 2.</li>
+  <li>All laboratory analytical data should be in the exact same units (organics, inorganics, should be in consistent units, ppt, ppb, ppm).</li>
+  <li>All laboratory analytical data non-detects must be treated in the exact same way, i.e., using zero (0) for ND, or <span class="fraction">1/2</span> the detection limit, but you must be consistent throughout the data. Note: Do not use parameters that have more than 75% non-detects in your PCCAT CSV, as there is not enough differentiation if the parameter is mostly non-detect.</li>
+ <li>All data fields must have a value. Do not leave a data field empty. See the example below: <br>
+    <img src="data_field_example.png" alt="Data example" class="responsive" width="600" height="400"><br>
+    In the above analytical data set,<br>
+    <ul>
+      <li>Row 1 is the required header row.<br></li>
+      <li>Column A holds unique individual Sample Identifications. (Note: Descriptions are useful for special locations, such as “Horse Creek” in the example)<br></li>
+      <li>Column B holds Group Information, i.e., which Samples are Groundwater or Surface Water.<br></li>
+      <li>Columns C through I are individual parameters in ng/l, with non-detects coded as zero (0).<br></li>
+      <li>All cells have a value in them, there are no blanks. Worksheet is saved as a CSV file prior to uploading into PCCAT and numerical features start from Column-3.<br></li>
+      <li>NOTE: The group Column B is optional, but highly suggested for environmental data. For instance, Group can be location based (Groundwater/Surface Water, Field Blank, Upstream/Downstream) or year based (2002, 2007, 2020), or both (GW_2002, GW_2007, GW_2020, SW_2002, SW_2007, SW_2020). Try to use 2-6 groups to help in the visualization. If you do not include a Group in Column B of your CSV, you must indicate that your numerical features start in column 2 in the Data Input tab.</li>
+      <li><font style="color:#ff0000;">Tidy data principles</font> (see at the end of this page): It is helpful to add a separate column for location and a separate column for date or year and adjust the start column of the numerical features in the Data Input tab.</li>
+    </ul></li>
+</ol>
 </div>
 
 
 
-
+<div id="data_transformation" class="section level3">
+<h3>Q2. What are my data transformation options?</h3>
+<ul style="font-size:18px;text-align:justify;">
+  <li>Use <strong>standardize</strong> if your data is normally distributed (typical for environmental data).<br></li>
+  <li>Use <strong>log-transform</strong> if you know your data is log normally distributed. Note: all of your variables have to be positive to apply this transformation, i.e. no 0s in any variable in the data.</li>
+</ul>
 </div>
 
-<script>
+<div id="pca" class="section level3">
+<h3>Q3. What is principle component analysis?</h3>
+<ul style="font-size:18px;text-align:justify;">
+  <li><strong>Principle Component Analysis</strong> (PCA) is mostly used as a tool in <a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">exploratory data analysis</a> and for making <a href="https://en.wikipedia.org/wiki/Predictive_modelling">predictive models</a>.<br></li>
+  <li>It is often used to visualize genetic distance and relatedness between populations (wiki).<br></li>
+  <li>A general overview of PCA can be found here (StatQuest 6 minute video): <a href="https://www.youtube.com/watch?v=HMOI_lkzW08" class="uri">https://www.youtube.com/watch?v=HMOI_lkzW08</a></li>
+</ul>
+</div>
 
-// add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
-}
-$(document).ready(function () {
-  bootstrapStylePandocTables();
-});
+<div id="clustering" class="section level3">
+<h3>Q4. What is clustering analysis?</h3>
+<ul style="font-size:18px;text-align:justify;">
+  <li><strong>Cluster analysis</strong> or <strong>clustering</strong> is the task of grouping a set of objects in such a way that objects in the same group (called a <strong>cluster</strong>) are more similar (in some sense) to each other than to those in the other groups (clusters).<br></li>
+  <li>It is a main task of exploratory <a href="https://en.wikipedia.org/wiki/Data_mining">data mining</a>, and a common technique for <a href="https://en.wikipedia.org/wiki/Statistics">statistical</a> <a href="https://en.wikipedia.org/wiki/Data_analysis">data analysis</a>, used in many fields, including <a href="https://en.wikipedia.org/wiki/Pattern_recognition">pattern recognition</a>, <a href="https://en.wikipedia.org/wiki/Image_analysis">image analysis</a>, <a href="https://en.wikipedia.org/wiki/Information_retrieval">information retrieval</a>, <a href="https://en.wikipedia.org/wiki/Bioinformatics">bioinformatics</a>, <a href="https://en.wikipedia.org/wiki/Data_compression">data compression</a>, <a href="https://en.wikipedia.org/wiki/Computer_graphics">computer graphics</a>, and <a href="https://en.wikipedia.org/wiki/Machine_learning">machine learning</a> (wiki).<br></li>
+  <li>A general overview can be found here (StatQuest 11 minute video): <a href="https://www.youtube.com/watch?v=7xHsRkOdVwo" class="uri">https://www.youtube.com/watch?v=7xHsRkOdVwo</a></li>
+</ul>
+</div>
+
+<br>
+<h1 style="font-size:30px;text-align:left;">Additional Resources</h1>
+
+<div id="statistics_at_msu" class="section level3">
+<h3>1. Information on statistics at MSU</h3>
+<p style="font-size:18px;text-align:justify;">Check with MSU-CSTAT for upcoming online and in-person classes in R and statistics at: <a href="https://cstat.msu.edu/events" class="uri">https://cstat.msu.edu/events</a></p>
+</div>
+
+<div id="pccat_use" class="section level3">
+<h3>2. Information on PCCAT use in State of Michigan EGLE</h3>
+<p style="font-size:18px;text-align:justify;">If you need assistance with formatting EGLE environmental data and using PCCAT at the State of Michigan, contact Arthur Ostaszewski (<a href="mailto:ostaszewskia@michigan.gov" class="email">ostaszewskia@michigan.gov</a>) of the Materials Management Division, Hazardous Waste section.</p>
+</div>
+
+<div id="pccat_use" class="section level3">
+<h3>3. Tidy data is a standard way of mapping the meaning of a dataset to its structure. </h3>
+<ul  style="font-size:18px;text-align:justify;">
+<li>Each variable forms a column.</li>
+<li>Each observation forms a row.</li>
+<li>Each type of observational unit forms a table.</li>
+</ul>
+<p style="font-size:18px;text-align:justify;"><i> Reference:</i> <a href="https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html" class="uri">R Vignette tidy data </a> </p>
+</div>
 
 
-</script>
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
+</div>
+</div>
 
 </body>
 </html>
