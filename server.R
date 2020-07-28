@@ -1,5 +1,5 @@
 ###############################################################
-#   PCCAT: Principle Component and Clustering Analysis Tool   #
+#   PCCAT: Principal Component and Clustering Analysis Tool   #
 ###############################################################
 
 # Server Side (server.R)
@@ -204,7 +204,7 @@ shinyServer(function(input, output, session){
         
         Var_Plot <- ggplot(perc_data, aes(x=reorder(PC, -Var), y=Var)) +
           geom_bar(stat="identity") +
-          ggtitle("Variances of Principle Components")+ 
+          ggtitle("Variances of Principal Components")+ 
           xlab("Principal Component") + ylab("Explained Variance") +
           geom_text(aes(label= paste(round(percent1,1),"% (",round(percent2, 1),"%)")), size=5, vjust=-.5) +
           ylim(0, pca$sdev[1]^2*1.2) + 
@@ -219,7 +219,7 @@ shinyServer(function(input, output, session){
     input$goButton
     if(!is.null(useData()))
     { 
-      "Percentages on top of each bar represent the percentage of variance explained by that principle component and the cumulative percentage in the parentheses"
+      "Percentages on top of each bar represent the percentage of variance explained by that principal component and the cumulative percentage in the parentheses"
     }  
   })
   
