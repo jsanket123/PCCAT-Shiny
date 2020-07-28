@@ -1,5 +1,5 @@
 # PCCAT-Shiny
-PCCAT is an interactive tool designed for multivariate environmental data analysis developed using the statistical software R. It consists of data preprocessing, univariate data exploration and summary, principle component analysis, and clustering analysis. This application is designed for the Michigan Department of Environment, Great Lakes, and Energy (EGLE).
+PCCAT is an interactive tool designed for multivariate environmental data analysis developed using the statistical software R. It consists of data preprocessing, univariate data exploration and summary, principal component analysis, and clustering analysis. This application is designed for the Michigan Department of Environment, Great Lakes, and Energy (EGLE).
 
 Authors: Sanket Jantre (project lead), Stefan Huebner, Sichao Wang, members of STATCOM (Statistics in the Community), a student volunteer group at the Center for Statistical Training and Consulting (CSTAT), Michigan State University (MSU), East Lansing, MI.
 
