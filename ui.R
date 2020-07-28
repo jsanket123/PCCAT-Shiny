@@ -1,5 +1,5 @@
 ###############################################################
-#   PCCAT: Principle Component and Clustering Analysis Tool   #
+#   PCCAT: Principal Component and Clustering Analysis Tool   #
 ###############################################################
 
 # User Interface (ui.R)
